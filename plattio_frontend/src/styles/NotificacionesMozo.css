@@ -1,0 +1,78 @@
+.notificaciones-mozo {
+    background-color: #fff7f2;
+    min-height: 100vh;
+    padding: 1.5rem;
+    padding-bottom: 5rem; /* deja lugar al nav */
+    font-family: sans-serif;
+}
+
+.encabezado-mozo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.logo {
+    height: 50px;
+    margin-bottom: 0.5rem;
+}
+
+.titulo-subrayado {
+    font-size: 20px;
+    font-weight: bold;
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.titulo-subrayado::after {
+    content: "";
+    position: absolute;
+    width: 50%;
+    height: 2px;
+    background-color: #e94f37;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -4px;
+}
+
+.botones-filtro {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.botones-filtro button {
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid #e94f37;
+    background-color: transparent;
+    color: #e94f37;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.botones-filtro .activo {
+    background-color: #e94f37;
+    color: white;
+}
+
+.lista-notificaciones {
+    padding: 0 20px;
+}
+
+.notificacion-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.flecha {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}

@@ -1,0 +1,154 @@
+.pedido-card {
+    width: 250px;
+    height: 280px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.pedido-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+}
+
+.icon-pointer {
+    cursor: pointer;
+}
+
+.pedido-items-scroll {
+    flex-grow: 1;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    overflow-y: auto;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.plato-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.plato-info {
+    display: flex;
+    flex-direction: column;
+    max-width: 140px; /* más corto para dejar espacio al timer */
+    flex-grow: 1;     /* se estira hasta donde puede */
+}
+
+.plato-nombre {
+    font-weight: bold;
+}
+
+.plato-detalle {
+    font-size: 0.85em;
+    color: #777;
+}
+
+.plato-tiempo {
+    font-size: 0.9em;
+    margin-top: 2px;
+    width: 30px;           /* ancho fijo para alinear todos los timers */
+    text-align: right;     /* para que se vea ordenado */
+    flex-shrink: 0;        /* que no se achique */
+}
+
+.pedido-footer {
+    display: flex;
+    justify-content: space-between;
+}
+
+/*.estado-boton {*/
+/*    background-color: #007bff;*/
+/*    color: white;*/
+/*    padding: 4px 8px;*/
+/*    border: none;*/
+/*    border-radius: 4px;*/
+/*    font-weight: bold;*/
+/*    cursor: pointer;*/
+/*}*/
+
+/*.estado-boton:hover {*/
+/*    background-color: #0056b3;*/
+/*}*/
+
+.estado-boton {
+    padding: 6px 12px;
+    background-color: #eaeaea;
+    color: black;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.estado-boton:hover {
+    background-color: #a9a9a9;
+}
+
+.pedido-items-scroll::-webkit-scrollbar {
+    width: 8px;
+}
+
+.pedido-items-scroll::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 4px;
+}
+
+.pedido-items-scroll::-webkit-scrollbar-thumb {
+    background-color: #D3523E;
+    border-radius: 4px;
+    border: 1px solid #f0f0f0;
+}
+
+.pedido-items-scroll::-webkit-scrollbar-thumb:hover {
+    background-color: #b33d2f;
+}
+
+
+.pedido-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left,
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header-center {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.btn-entregar {
+  margin-top: 0.5rem;
+  background-color: #D3523E;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-entregar:hover {
+  background-color: #902a1b;
+}

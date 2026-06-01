@@ -1,0 +1,94 @@
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-detalle {
+    background: white;
+    width: 480px;             /* ancho fijo mayor */
+    height: 600px;            /* alto fijo */
+    border-radius: 10px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* header y footer sin cambios */
+.pedido-header,
+.pedido-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.5rem;
+}
+
+/* botón de estado */
+.estado-boton-modal {
+    padding: 0.4rem 1rem;
+    background-color: #f2705b;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* lista de platos con scroll interno */
+.pedido-items-scroll {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+    margin-bottom: 0.5rem;
+}
+
+/* ítems */
+.plato-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.6rem;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 0.4rem;
+}
+
+.plato-info {
+    flex-grow: 1;
+}
+
+.plato-nombre {
+    font-weight: bold;
+}
+
+.plato-detalle {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.plato-tiempo {
+    margin: 0 10px;
+    font-weight: bold;
+}
+
+.icon-pointer {
+    cursor: pointer;
+}
+
+.modal-button {
+    margin-top: 15px;
+    background-color: #b33d2f;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}

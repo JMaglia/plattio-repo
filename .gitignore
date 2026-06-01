@@ -1,0 +1,29 @@
+# Claude Code
+.github/
+
+# Backend - Java/Maven
+plattio_backend/target/
+plattio_backend/.mvn/
+*.class
+*.jar
+*.war
+
+# Backend - configuración sensible
+plattio_backend/src/main/resources/application-prod.properties
+
+# Frontend - dependencias
+plattio_frontend/node_modules/
+plattio_frontend/build/
+
+# Variables de entorno
+.env
+.env.local
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# IDEs
+.idea/
+*.iml
+.vscode/

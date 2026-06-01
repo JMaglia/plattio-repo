@@ -1,0 +1,120 @@
+.mesa-container {
+    background-color: #fff7f2;
+    padding: 1.5rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    font-family: sans-serif;
+}
+
+.logo {
+    height: 50px;
+    margin-bottom: 1rem;
+}
+
+.mesa-numero {
+    color: #d3352e;
+    font-weight: bold;
+}
+
+.separador {
+    border-bottom: 2px solid #d3352e;
+    width: 60%;
+    text-align: center;
+    margin: 1rem 0;
+    font-weight: 600;
+}
+
+.nuevo-pedido-box {
+    width: 100%;
+    max-width: 320px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 1.5rem;
+    text-align: center;
+    font-size: 2rem;
+    color: #888;
+    cursor: pointer;
+    background: white;
+    margin-top: 1rem;
+}
+
+.mas-simbolo {
+    font-size: 2.5rem;
+}
+
+/* MOZOOOOOOOOO */
+.mozo-icono {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    cursor: pointer;
+    z-index: 30;
+}
+
+.mozo-icono img {
+    width: 50px;
+}
+
+.mozo-menu-icono {
+    width: 20px;
+    height: 20px;
+}
+
+.mozo-menu {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 0.75rem 1rem;
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 160px;
+}
+
+.mozo-menu-opcion {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.mozo-menu-opcion:last-child {
+    border-bottom: none;
+}
+
+.mozo-menu-opcion span {
+    font-size: 1.2rem;
+}
+
+.mozo-menu-opcion:hover {
+    color: #d3352e;
+}
+
+.boton-derivar {
+    background-color: #d3352e;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    font-weight: bold;
+    margin-top: 1.5rem;
+    margin-bottom: 4rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.boton-derivar:hover {
+    background-color: #b42c25;
+}

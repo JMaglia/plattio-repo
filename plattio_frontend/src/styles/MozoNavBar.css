@@ -1,0 +1,31 @@
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #fdfbf6; /* Beige claro */
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 1rem 0;
+    z-index: 50;
+}
+
+.bottom-nav img {
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.bottom-nav img:hover {
+    transform: scale(1.1);
+    opacity: 1;
+}
+
+.bottom-nav img.activo {
+    opacity: 1;
+    filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
+}

@@ -1,0 +1,54 @@
+.mozo-board {
+    background-color: #fff7f2;
+    min-height: 100vh;
+    padding: 1.5rem;
+    padding-bottom: 5rem; /* deja lugar al nav */
+    font-family: sans-serif;
+}
+
+.encabezado-mozo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+
+.titulo-seccion {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.botones-filtro {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.botones-filtro button {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: 1px solid #d3352e;
+    background: white;
+    color: #d3352e;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.botones-filtro button.activo {
+    background: #d3352e;
+    color: white;
+}
+
+.lista-mesas {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+    padding-bottom: 4rem; /* espacio para el navbar */
+}
+
+
+

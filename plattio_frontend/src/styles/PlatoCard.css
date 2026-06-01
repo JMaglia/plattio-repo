@@ -1,0 +1,53 @@
+.plato-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid #ddd;
+    font-size: 0.95rem;
+}
+
+.plato-info {
+    flex: 2;
+}
+
+.plato-nombre {
+    font-weight: bold;
+    margin-bottom: 0.2rem;
+}
+
+.plato-detalle {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.plato-tiempo {
+    font-size: 0.75rem;
+    color: #999;
+}
+
+.plato-precio {
+    flex: 1;
+    text-align: right;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.plato-controles {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.icono-control {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    filter: brightness(0); /* fuerza a que el PNG se vea negro */
+}
+
+.cantidad {
+    font-weight: bold;
+}

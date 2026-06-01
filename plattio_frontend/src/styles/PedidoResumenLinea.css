@@ -1,0 +1,25 @@
+.pedido-resumen-linea {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.3rem;
+}
+
+.pedido-resumen-linea .categoria {
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.pedido-resumen-linea .descripcion {
+    font-size: 0.8rem;
+    color: #444;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pedido-divider {
+    border: none;
+    border-top: 1px solid #e0e0e0;
+    margin: 0.4rem 0 0.6rem 0;
+}
+

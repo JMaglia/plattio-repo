@@ -1,0 +1,156 @@
+.editar-carta-container {
+    background-color: #fefbf9;
+    min-height: 100vh;
+    font-family: sans-serif;
+    padding: 1rem 1rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.editar-carta-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
+.editar-carta-header .logo {
+    height: 36px;
+    margin-top: 10px;
+}
+
+.editar-carta-nav {
+    display: flex;
+    justify-content: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.6rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid #d3352e;
+    width: 100%;
+}
+
+.editar-carta-nav button {
+    border: none;
+    background-color: #f8e4df;
+    color: #d3352e;
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.editar-carta-nav button:hover {
+    background-color: #d3352e;
+    color: white;
+}
+
+.editar-carta-secciones {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 4rem;
+    width: 100%;
+}
+
+.categoria-titulo {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 0.2rem;
+    padding-left: 1rem;
+}
+
+.fila-plato {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid #ddd;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.plato-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.plato-info h4 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+    overflow-wrap: break-word;
+}
+
+.plato-info p {
+    margin: 0.2rem 0 0 0;
+    font-size: 0.9rem;
+    color: #444;
+    max-width: 100%;
+    word-break: break-word;
+}
+
+.acciones {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-left: 0.8rem;
+    flex-shrink: 0;
+}
+
+.acciones img {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.acciones img:hover {
+    transform: scale(1.1);
+}
+
+.acciones .precio {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #000;
+}
+
+.agregar-btn {
+    width: 38px;
+    height: 38px;
+    border: 2px solid black;
+    border-radius: 50%;
+    font-size: 1.8rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem auto;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.agregar-btn:hover {
+    background-color: rgb(209, 209, 209);
+    color: white;
+}
+
+.menu-btn-2 {
+  background-color: #ec8074;
+  color: white;
+  font-size: 22px;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  flex-shrink: 0;
+  line-height: 1;
+  transition: background-color 0.2s ease;
+}
+
+.menu-btn-2:hover {
+  background-color: #ac3f35;
+}

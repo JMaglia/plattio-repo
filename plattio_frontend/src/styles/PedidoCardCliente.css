@@ -1,0 +1,67 @@
+.pedido-card-cliente {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    margin-bottom: 1rem;
+    padding: 1rem;
+    width: 100%;
+    max-width: 320px;
+}
+
+.pedido-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.estado {
+    background-color: #f2705b;
+    color: white;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.plato {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.8rem;
+    font-size: 0.95rem;
+}
+
+.plato strong {
+    font-weight: 600;
+}
+
+.detalle {
+    font-size: 0.85rem;
+    color: #555;
+}
+
+.botones-confirmacion {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 1.5rem;
+}
+
+.confirmar-btn, .cancelar-btn {
+    padding: 8px 16px;
+    font-weight: bold;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.confirmar-btn {
+    background-color: #d3352e;
+    color: white;
+}
+
+.cancelar-btn {
+    background-color: #e0e0e0;
+    color: #333;
+}

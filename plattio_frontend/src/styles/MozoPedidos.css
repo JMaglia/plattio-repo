@@ -1,0 +1,78 @@
+.mozo-pedidos {
+    background-color: #fff7f2;
+    min-height: 100vh;
+    padding: 1.5rem;
+    padding-bottom: 5rem; /* deja lugar al nav */
+    font-family: sans-serif;
+}
+
+/* Header con logo + título */
+.encabezado-mozo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.logo {
+    height: 50px;
+    margin-bottom: 0.5rem;
+}
+
+.titulo-subrayado {
+    font-weight: bold;
+    font-size: 1.2rem;
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.titulo-subrayado::after {
+    content: '';
+    display: block;
+    width: 50%;
+    height: 2px;
+    background-color: #d3352e;
+    margin: 0.3rem auto 0;
+}
+
+/* Filtros */
+.botones-filtro {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.botones-filtro button {
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    border: 1px solid #d3352e;
+    background-color: white;
+    color: #d3352e;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.botones-filtro button.activo,
+.botones-filtro button:hover {
+    background-color: #d3352e;
+    color: white;
+}
+
+/* Lista de pedidos */
+.lista-pedidos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.estado-label {
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+

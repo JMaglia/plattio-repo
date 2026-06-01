@@ -1,0 +1,13 @@
+.categoria-seccion {
+    padding: 0 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.categoria-titulo {
+    border-bottom: 2px solid #d3352e;
+    color: #d3352e;
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 1rem 0;
+    text-transform: capitalize;
+}
