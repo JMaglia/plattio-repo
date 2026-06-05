@@ -1,7 +1,7 @@
 package com.plattio.plattio_backend.datos;
 
 import com.plattio.plattio_backend.modelo.Empleado;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.plattio.plattio_backend.modelo.Rol;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -10,12 +10,14 @@ import java.util.Optional;
 @Repository
 public class EmpleadoDAO {
 
-    @Autowired
-    private EmpleadoRepository empleadoRepository;
+    private final EmpleadoRepository empleadoRepository;
 
-    // CRUD básico
-    public void guardar(Empleado empleado) {
-        empleadoRepository.save(empleado);
+    public EmpleadoDAO(EmpleadoRepository empleadoRepository) {
+        this.empleadoRepository = empleadoRepository;
+    }
+
+    public Empleado guardar(Empleado empleado) {
+        return empleadoRepository.save(empleado);
     }
 
     public void eliminar(Long id) {
@@ -30,13 +32,12 @@ public class EmpleadoDAO {
         return empleadoRepository.findAll();
     }
 
-    // Consultas útiles
     public Optional<Empleado> buscarPorEmail(String email) {
         return empleadoRepository.findByEmail(email);
     }
 
-    public List<Empleado> buscarPorRol(String rol) {
-        return empleadoRepository.findByRolIgnoreCase(rol);
+    public List<Empleado> buscarPorRol(Rol rol) {
+        return empleadoRepository.findByRol(rol);
     }
 
     public List<Empleado> buscarPorNombre(String nombreParcial) {

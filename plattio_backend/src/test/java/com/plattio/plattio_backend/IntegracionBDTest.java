@@ -35,7 +35,7 @@ public class IntegracionBDTest {
     @Test
     void testInteraccionCompleta() throws Exception {
         // 1. Crear un mozo
-        Empleado mozo = new Empleado("Juan Pérez", "juan@plattio.com", "1234", "mozo");
+        Empleado mozo = new Empleado("Juan Pérez", "juan@plattio.com", "1234", Rol.MOZO);
         empleadoService.registrarEmpleado(mozo);
         Empleado mozoPersistido = empleadoService.buscarPorEmail("juan@plattio.com");
         assertNotNull(mozoPersistido.getId());

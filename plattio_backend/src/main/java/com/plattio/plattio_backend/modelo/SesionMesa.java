@@ -1,6 +1,7 @@
 package com.plattio.plattio_backend.modelo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.plattio.plattio_backend.mapper.EmpleadoMapper;
 import com.plattio.plattio_backend.views.PedidoView;
 import com.plattio.plattio_backend.views.SesionMesaView;
 import jakarta.persistence.*;
@@ -191,7 +192,7 @@ public class SesionMesa {
                 this.tipoComensal,
                 this.fechaInicio.format(formatter),
                 this.fechaFin != null ? this.fechaFin.format(formatter) : null,
-                this.mozo.toView(),
+                this.mozo != null ? EmpleadoMapper.toView(this.mozo) : null,
                 pedidosView
         );
     }

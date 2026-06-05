@@ -1,10 +1,14 @@
 package com.plattio.plattio_backend.controller;
 
+import com.plattio.plattio_backend.dto.request.ActualizarEmpleadoRequest;
+import com.plattio.plattio_backend.dto.request.CambiarRolRequest;
+import com.plattio.plattio_backend.dto.request.LoginRequest;
+import com.plattio.plattio_backend.dto.request.RegistrarEmpleadoRequest;
 import com.plattio.plattio_backend.exceptions.EmpleadoException;
-import com.plattio.plattio_backend.modelo.Empleado;
+import com.plattio.plattio_backend.mapper.EmpleadoMapper;
+import com.plattio.plattio_backend.modelo.Rol;
 import com.plattio.plattio_backend.service.EmpleadoService;
 import com.plattio.plattio_backend.views.EmpleadoView;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,99 +16,85 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/empleados")
 public class EmpleadoController {
 
-    @Autowired
-    private EmpleadoService empleadoService;
+    private final EmpleadoService empleadoService;
 
-    @GetMapping("/")
-    public String mensaje() {
-        return """
-                recetas culinarias
-                """;
+    public EmpleadoController(EmpleadoService empleadoService) {
+        this.empleadoService = empleadoService;
     }
 
-    @GetMapping("/probar-excepcion/{email}")
-    public Empleado probarExcepcion(@PathVariable String email) throws EmpleadoException {
-        return empleadoService.buscarPorEmail(email);
-    }
-
-    @GetMapping("/empleados")
-    public ResponseEntity<List<EmpleadoView>> obtenerTodosLosEmpleados() throws EmpleadoException {
+    @GetMapping
+    public ResponseEntity<List<EmpleadoView>> obtenerTodosLosEmpleados() {
         List<EmpleadoView> views = empleadoService.obtenerTodos().stream()
-                .map(Empleado::toView)
+                .map(EmpleadoMapper::toView)
                 .toList();
-        return new ResponseEntity<>(views, HttpStatus.OK);
+        return ResponseEntity.ok(views);
     }
 
-    @GetMapping("/empleados/{id}")
-    public ResponseEntity<EmpleadoView> obtenerEmpleadoPorId(@PathVariable Long id) throws EmpleadoException {
-        return new ResponseEntity<>(empleadoService.buscarPorId(id).toView(), HttpStatus.OK);
+    @GetMapping("/{id}")
+    public ResponseEntity<EmpleadoView> obtenerEmpleadoPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(EmpleadoMapper.toView(empleadoService.buscarPorId(id)));
     }
 
-    @GetMapping("/empleados/email/{email}")
-    public ResponseEntity<EmpleadoView> obtenerEmpleadoPorEmail(@PathVariable String email) throws EmpleadoException {
-        return new ResponseEntity<>(empleadoService.buscarPorEmail(email).toView(), HttpStatus.OK);
+    @GetMapping("/email/{email}")
+    public ResponseEntity<EmpleadoView> obtenerEmpleadoPorEmail(@PathVariable String email) {
+        return ResponseEntity.ok(EmpleadoMapper.toView(empleadoService.buscarPorEmail(email)));
     }
 
-    @GetMapping("/empleados/nombre/{nombreParcial}")
-    public ResponseEntity<List<EmpleadoView>> buscarEmpleadosPorNombre(@PathVariable String nombreParcial) throws EmpleadoException {
+    @GetMapping("/nombre/{nombreParcial}")
+    public ResponseEntity<List<EmpleadoView>> buscarEmpleadosPorNombre(@PathVariable String nombreParcial) {
         List<EmpleadoView> views = empleadoService.buscarPorNombre(nombreParcial).stream()
-                .map(Empleado::toView)
+                .map(EmpleadoMapper::toView)
                 .toList();
-        return new ResponseEntity<>(views, HttpStatus.OK);
+        return ResponseEntity.ok(views);
     }
 
-    @GetMapping("/empleados/rol/{rol}")
-    public ResponseEntity<List<EmpleadoView>> buscarEmpleadosPorRol(@PathVariable String rol) throws EmpleadoException {
-        List<EmpleadoView> views = empleadoService.buscarPorRol(rol).stream()
-                .map(Empleado::toView)
+    @GetMapping("/rol/{rol}")
+    public ResponseEntity<List<EmpleadoView>> buscarEmpleadosPorRol(@PathVariable String rol) {
+        Rol rolEnum;
+        try {
+            rolEnum = Rol.fromString(rol);
+        } catch (IllegalArgumentException e) {
+            throw new EmpleadoException("Rol no válido: " + rol, HttpStatus.BAD_REQUEST);
+        }
+        List<EmpleadoView> views = empleadoService.buscarPorRol(rolEnum).stream()
+                .map(EmpleadoMapper::toView)
                 .toList();
-        return new ResponseEntity<>(views, HttpStatus.OK);
+        return ResponseEntity.ok(views);
     }
 
-    @PostMapping("/empleados")
-    public ResponseEntity<String> registrarEmpleado(@RequestBody Empleado nuevo) throws EmpleadoException {
-        empleadoService.registrarEmpleado(nuevo);
+    @PostMapping
+    public ResponseEntity<String> registrarEmpleado(@RequestBody RegistrarEmpleadoRequest request) {
+        empleadoService.registrarEmpleado(request);
         return new ResponseEntity<>("Empleado registrado con éxito", HttpStatus.CREATED);
     }
 
-    @PostMapping("/empleados/login/{email}/{password}")
-    public ResponseEntity<EmpleadoView> loginEmpleado(@PathVariable String email, @PathVariable String password) throws EmpleadoException {
-        Empleado empleado = empleadoService.login(email, password);
-        return new ResponseEntity<>(empleado.toView(), HttpStatus.OK);
+    @PostMapping("/login")
+    public ResponseEntity<EmpleadoView> loginEmpleado(@RequestBody LoginRequest request) {
+        return ResponseEntity.ok(EmpleadoMapper.toView(empleadoService.login(request.email(), request.password())));
     }
 
-/*    @PostMapping("/empleados/{id}/actualizar")
+    @PutMapping("/{id}")
     public ResponseEntity<String> actualizarDatosEmpleado(
             @PathVariable Long id,
-            @RequestParam String nuevoNombre,
-            @RequestParam String nuevoEmail) throws EmpleadoException {
-
-        empleadoService.actualizarDatos(id, nuevoNombre, nuevoEmail);
-        return new ResponseEntity<>("Datos del empleado actualizados con éxito", HttpStatus.OK);
-    }*/
-
-    @PostMapping("/empleados/{id}/actualizar/{nuevoNombre}/{nuevoEmail}")
-    public ResponseEntity<String> actualizarDatosEmpleado(
-            @PathVariable Long id,
-            @PathVariable String nuevoNombre,
-            @PathVariable String nuevoEmail) throws EmpleadoException {
-        empleadoService.actualizarDatos(id, nuevoNombre, nuevoEmail);
-        return new ResponseEntity<>("Datos del empleado actualizados con éxito", HttpStatus.OK);
+            @RequestBody ActualizarEmpleadoRequest request) {
+        empleadoService.actualizarDatos(id, request.nombre(), request.email());
+        return ResponseEntity.ok("Datos del empleado actualizados con éxito");
     }
 
-    @PostMapping("/empleados/{id}/cambiarRol/{nuevoRol}")
+    @PatchMapping("/{id}/rol")
     public ResponseEntity<String> cambiarRolEmpleado(
             @PathVariable Long id,
-            @PathVariable String nuevoRol) throws EmpleadoException {
-        empleadoService.cambiarRol(id, nuevoRol);
-        return new ResponseEntity<>("Rol del empleado actualizado con éxito", HttpStatus.OK);
+            @RequestBody CambiarRolRequest request) {
+        empleadoService.cambiarRol(id, request.rol());
+        return ResponseEntity.ok("Rol del empleado actualizado con éxito");
     }
 
-    @DeleteMapping("/empleados/{id}")
-    public ResponseEntity<String> eliminarEmpleado(@PathVariable Long id) throws EmpleadoException {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarEmpleado(@PathVariable Long id) {
         empleadoService.eliminar(id);
-        return new ResponseEntity<>("Empleado eliminado con éxito", HttpStatus.OK);
+        return ResponseEntity.noContent().build();
     }
 }
