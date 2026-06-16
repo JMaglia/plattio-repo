@@ -1,11 +1,10 @@
 package com.plattio.plattio_backend.service;
 
 import com.plattio.plattio_backend.datos.MesaDAO;
+import com.plattio.plattio_backend.dto.request.CrearMesaRequest;
 import com.plattio.plattio_backend.exceptions.MesaException;
-import com.plattio.plattio_backend.exceptions.SesionMesaException;
 import com.plattio.plattio_backend.modelo.Mesa;
 import com.plattio.plattio_backend.modelo.SesionMesa;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -14,60 +13,48 @@ import java.util.List;
 @Service
 public class MesaService {
 
-    @Autowired
-    private MesaDAO mesaDAO;
-    @Autowired
-    private SesionMesaService sesionMesaService;
+    private final MesaDAO mesaDAO;
+    private final SesionMesaService sesionMesaService;
 
-    // Obtener todas las mesas
-    public List<Mesa> obtenerTodas() throws MesaException {
-        List<Mesa> mesas = mesaDAO.obtenerTodas();
-        if (mesas.isEmpty()) {
-            throw new MesaException("No hay mesas registradas en el sistema.", HttpStatus.NOT_FOUND);
-        }
-        return mesas;
+    public MesaService(MesaDAO mesaDAO, SesionMesaService sesionMesaService) {
+        this.mesaDAO = mesaDAO;
+        this.sesionMesaService = sesionMesaService;
     }
 
-    // Buscar por ID
-    public Mesa obtenerPorId(Long id) throws MesaException {
+    public List<Mesa> obtenerTodas() {
+        return mesaDAO.obtenerTodas();
+    }
+
+    public Mesa obtenerPorId(Long id) {
         return mesaDAO.buscarPorId(id)
                 .orElseThrow(() -> new MesaException("Mesa no encontrada con ID: " + id, HttpStatus.NOT_FOUND));
     }
 
-    // Buscar por número
-    public Mesa obtenerPorNumero(Integer numero) throws MesaException {
+    public Mesa obtenerPorNumero(Integer numero) {
         return mesaDAO.buscarPorNumero(numero)
                 .orElseThrow(() -> new MesaException("Mesa no encontrada con número: " + numero, HttpStatus.NOT_FOUND));
     }
 
-    // Buscar por QR
-    public Mesa obtenerPorQrToken(String qrToken) throws MesaException {
+    public Mesa obtenerPorQrToken(String qrToken) {
         return mesaDAO.buscarPorQrToken(qrToken)
                 .orElseThrow(() -> new MesaException("Mesa no encontrada con token QR: " + qrToken, HttpStatus.NOT_FOUND));
     }
 
-    // Obtener mesas por estado
-    public List<Mesa> obtenerPorEstado(String estado) throws MesaException {
-        List<Mesa> mesas = mesaDAO.obtenerPorEstado(estado);
-        if (mesas.isEmpty()) {
-            throw new MesaException("No se encontraron mesas con el estado: " + estado, HttpStatus.NOT_FOUND);
-        }
-        return mesas;
+    public List<Mesa> obtenerPorEstado(String estado) {
+        return mesaDAO.obtenerPorEstado(estado);
     }
 
-    // Crear nueva mesa
-    public void crearMesa(Mesa mesa) throws MesaException {
-//        if (mesaDAO.buscarPorNumero(mesa.getNumero()).isPresent()) {
-//            throw new MesaException("Ya existe una mesa con ese número.", HttpStatus.BAD_REQUEST);
-//        }
-        if (mesaDAO.buscarPorQrToken(mesa.getQrToken()).isPresent()) {
+    public void crearMesa(CrearMesaRequest request) {
+        if (mesaDAO.buscarPorNumero(request.numero()).isPresent()) {
+            throw new MesaException("Ya existe una mesa con el número: " + request.numero(), HttpStatus.BAD_REQUEST);
+        }
+        if (mesaDAO.buscarPorQrToken(request.qrToken()).isPresent()) {
             throw new MesaException("Ya existe una mesa con ese token QR.", HttpStatus.BAD_REQUEST);
         }
-        mesaDAO.guardar(mesa);
+        mesaDAO.guardar(new Mesa(request.numero(), request.qrToken()));
     }
 
-    // Ocupar una mesa
-    public void ocuparMesa(Long id) throws MesaException {
+    public void ocuparMesa(Long id) {
         Mesa mesa = obtenerPorId(id);
         if (!mesa.estaLibre()) {
             throw new MesaException("La mesa ya está ocupada.", HttpStatus.BAD_REQUEST);
@@ -76,8 +63,7 @@ public class MesaService {
         mesaDAO.guardar(mesa);
     }
 
-    // Liberar una mesa
-    public void liberarMesa(Long id) throws MesaException {
+    public void liberarMesa(Long id) {
         Mesa mesa = obtenerPorId(id);
         if (mesa.estaLibre()) {
             throw new MesaException("La mesa ya está libre.", HttpStatus.BAD_REQUEST);
@@ -86,37 +72,34 @@ public class MesaService {
         mesaDAO.guardar(mesa);
     }
 
-    // Cambiar estado manualmente
-    public void cambiarEstado(Long id, String nuevoEstado) throws MesaException {
+    public void cambiarEstado(Long id, String nuevoEstado) {
         Mesa mesa = obtenerPorId(id);
         mesa.cambiarEstado(nuevoEstado);
         mesaDAO.guardar(mesa);
     }
 
-    // Validar si está libre
-    public boolean estaLibre(Long id) throws MesaException {
+    public boolean estaLibre(Long id) {
         return obtenerPorId(id).estaLibre();
     }
 
-    // Validar si está ocupada
-    public boolean estaOcupada(Long id) throws MesaException {
+    public boolean estaOcupada(Long id) {
         return obtenerPorId(id).estaOcupada();
     }
 
-    // Validar si tiene sesión activa con id mesa
-    public boolean tieneSesionActiva(Long id) throws MesaException {
+    public boolean tieneSesionActiva(Long id) {
         return obtenerPorId(id).tieneSesionActiva();
     }
 
-    // Validar si tiene sesión activa con el numero de mesa
-    public boolean tieneSesionActivaNumMesa(Integer numero) throws MesaException {
+    public boolean tieneSesionActivaNumMesa(Integer numero) {
         return obtenerPorNumero(numero).tieneSesionActiva();
     }
 
-    // obtener si tiene sesión activa con el numero de mesa
-    public SesionMesa obtenerSesionActivaNumMesa(Integer numero) throws MesaException, SesionMesaException {
-        Mesa mesa = obtenerPorNumero(numero);
-        SesionMesa sesion = sesionMesaService.obtenerSesionActivaPorMesa(mesa.getId());
-        return sesion;
+    public SesionMesa obtenerSesionActivaNumMesa(Integer numero) {
+        return sesionMesaService.obtenerSesionActivaPorMesa(obtenerPorNumero(numero).getId());
+    }
+
+    public void eliminar(Long id) {
+        obtenerPorId(id);
+        mesaDAO.eliminar(id);
     }
 }

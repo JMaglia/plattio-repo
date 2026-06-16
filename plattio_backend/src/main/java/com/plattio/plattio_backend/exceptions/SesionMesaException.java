@@ -2,7 +2,7 @@ package com.plattio.plattio_backend.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public class SesionMesaException extends Exception {
+public class SesionMesaException extends RuntimeException {
 
     private final HttpStatus status;
 

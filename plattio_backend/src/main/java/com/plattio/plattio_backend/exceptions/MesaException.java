@@ -2,7 +2,7 @@ package com.plattio.plattio_backend.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public class MesaException extends Exception {
+public class MesaException extends RuntimeException {
 
     private final HttpStatus status;
 

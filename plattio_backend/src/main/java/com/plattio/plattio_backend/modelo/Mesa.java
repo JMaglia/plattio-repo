@@ -1,10 +1,10 @@
 package com.plattio.plattio_backend.modelo;
 
-import com.plattio.plattio_backend.views.MesaView;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Table(name = "mesa")
@@ -18,15 +18,13 @@ public class Mesa {
     private Integer numero;
 
     @Column(nullable = false)
-    private String estado; // Ej: "libre", "ocupada"
+    private String estado;
 
     @Column(name = "qr_token", unique = true)
     private String qrToken;
 
     @OneToMany(mappedBy = "mesa", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<SesionMesa> sesiones = new ArrayList<>();
-
-    // ---------- Constructores ----------
 
     public Mesa() {
         this.estado = "libre";
@@ -38,39 +36,18 @@ public class Mesa {
         this.qrToken = qrToken;
     }
 
-    // ---------- Getters y Setters ----------
+    public Long getId() { return id; }
 
-    public Long getId() {
-        return id;
-    }
+    public Integer getNumero() { return numero; }
+    public void setNumero(Integer numero) { this.numero = numero; }
 
-    public Integer getNumero() {
-        return numero;
-    }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
 
-    public void setNumero(Integer numero) {
-        this.numero = numero;
-    }
+    public String getQrToken() { return qrToken; }
+    public void setQrToken(String qrToken) { this.qrToken = qrToken; }
 
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public String getQrToken() {
-        return qrToken;
-    }
-
-    public void setQrToken(String qrToken) {
-        this.qrToken = qrToken;
-    }
-
-    public List<SesionMesa> getSesiones() {
-        return sesiones;
-    }
+    public List<SesionMesa> getSesiones() { return sesiones; }
 
     public void agregarSesion(SesionMesa sesion) {
         sesiones.add(sesion);
@@ -82,7 +59,6 @@ public class Mesa {
         sesion.setMesa(null);
     }
 
-    // ---------- METODOS----------
     public void ocupar() {
         if (!this.estado.equalsIgnoreCase("libre")) {
             throw new IllegalStateException("La mesa ya está ocupada o reservada.");
@@ -97,24 +73,18 @@ public class Mesa {
         this.estado = "libre";
     }
 
-    // ---------- METODOS ----------
-    public boolean estaOcupada() {
-        return "ocupada".equalsIgnoreCase(this.estado);
-    }
-
-    public boolean estaLibre() {
-        return "libre".equalsIgnoreCase(this.estado);
-    }
+    public boolean estaOcupada() { return "ocupada".equalsIgnoreCase(this.estado); }
+    public boolean estaLibre() { return "libre".equalsIgnoreCase(this.estado); }
+    public boolean estaReservada() { return "reservada".equalsIgnoreCase(this.estado); }
 
     public boolean tieneSesionActiva() {
         return sesiones.stream().anyMatch(s -> s.getFechaFin() == null);
     }
 
-    public SesionMesa getSesionActiva() {
+    public Optional<SesionMesa> getSesionActiva() {
         return sesiones.stream()
                 .filter(s -> s.getFechaFin() == null)
-                .findFirst()
-                .orElse(null);
+                .findFirst();
     }
 
     public void cambiarEstado(String nuevoEstado) {
@@ -126,24 +96,8 @@ public class Mesa {
         this.estado = nuevoEstado.toLowerCase();
     }
 
-    public boolean estaReservada() {
-        return "reservada".equalsIgnoreCase(this.estado);
-    }
-
-    // ---------- toString ----------
-
     @Override
     public String toString() {
-        return "Mesa{" +
-                "id=" + id +
-                ", numero=" + numero +
-                ", estado='" + estado + '\'' +
-                ", qrToken='" + qrToken + '\'' +
-                '}';
+        return "Mesa{id=" + id + ", numero=" + numero + ", estado='" + estado + "', qrToken='" + qrToken + "'}";
     }
-
-    public MesaView toView() {
-        return new MesaView(this.id, this.numero, this.estado, this.qrToken);
-    }
-
 }
