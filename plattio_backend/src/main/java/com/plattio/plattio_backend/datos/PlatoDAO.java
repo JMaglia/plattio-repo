@@ -1,7 +1,6 @@
 package com.plattio.plattio_backend.datos;
 
 import com.plattio.plattio_backend.modelo.Plato;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -11,12 +10,14 @@ import java.util.Optional;
 @Repository
 public class PlatoDAO {
 
-    @Autowired
-    private PlatoRepository platoRepository;
+    private final PlatoRepository platoRepository;
 
-    // CRUD básico
-    public void guardar(Plato plato) {
-        platoRepository.save(plato);
+    public PlatoDAO(PlatoRepository platoRepository) {
+        this.platoRepository = platoRepository;
+    }
+
+    public Plato guardar(Plato plato) {
+        return platoRepository.save(plato);
     }
 
     public void eliminar(Long id) {
@@ -31,7 +32,6 @@ public class PlatoDAO {
         return platoRepository.findAll();
     }
 
-    // Consultas útiles
     public List<Plato> buscarPorCategoria(String categoria) {
         return platoRepository.findByCategoriaIgnoreCase(categoria);
     }
@@ -51,5 +51,4 @@ public class PlatoDAO {
     public List<Plato> obtenerTodosLosActivos() {
         return platoRepository.findByActivoEnCartaTrue();
     }
-
 }

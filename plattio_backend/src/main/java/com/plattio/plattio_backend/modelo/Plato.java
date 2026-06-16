@@ -1,6 +1,5 @@
 package com.plattio.plattio_backend.modelo;
 
-import com.plattio.plattio_backend.views.PlatoView;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -132,15 +131,4 @@ public class Plato {
                 '}';
     }
 
-    public PlatoView toView() {
-        return new PlatoView(
-                this.id,
-                this.nombre,
-                this.descripcion,
-                this.precio,
-                this.categoria,
-                this.tiempoEstimado,
-                this.activoEnCarta
-        );
-    }
 }

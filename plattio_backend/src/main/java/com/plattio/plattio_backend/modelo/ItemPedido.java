@@ -1,5 +1,6 @@
 package com.plattio.plattio_backend.modelo;
 
+import com.plattio.plattio_backend.mapper.PlatoMapper;
 import com.plattio.plattio_backend.views.ItemPedidoView;
 import jakarta.persistence.*;
 
@@ -175,7 +176,7 @@ public class ItemPedido {
                 "finalizado".equalsIgnoreCase(this.estado),
                 this.estado,
                 this.cantidad,
-                this.plato.toView()
+                PlatoMapper.toView(this.plato)
         );
     }
 

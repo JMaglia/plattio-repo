@@ -2,7 +2,7 @@ package com.plattio.plattio_backend.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public class PlatoException extends Exception {
+public class PlatoException extends RuntimeException {
 
     private final HttpStatus status;
 
