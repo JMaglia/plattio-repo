@@ -1,13 +1,9 @@
 package com.plattio.plattio_backend.modelo;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.plattio.plattio_backend.views.ItemPedidoView;
-import com.plattio.plattio_backend.views.PedidoView;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +17,6 @@ public class Pedido {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sesion_id")
-    @JsonIgnore
     private SesionMesa sesion;
 
     @Column(name = "fecha_inicio", nullable = false)
@@ -40,7 +35,6 @@ public class Pedido {
     private String categoria;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
     private List<ItemPedido> items = new ArrayList<>();
 
     public Pedido() {
@@ -54,61 +48,27 @@ public class Pedido {
         this.categoria = categoria;
     }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
-    public SesionMesa getSesion() {
-        return sesion;
-    }
+    public SesionMesa getSesion() { return sesion; }
+    public void setSesion(SesionMesa sesion) { this.sesion = sesion; }
 
-    public void setSesion(SesionMesa sesion) {
-        this.sesion = sesion;
-    }
+    public LocalDateTime getFechaInicio() { return fechaInicio; }
+    public void setFechaInicio(LocalDateTime fechaInicio) { this.fechaInicio = fechaInicio; }
 
-    public LocalDateTime getFechaInicio() {
-        return fechaInicio;
-    }
+    public LocalDateTime getFechaFin() { return fechaFin; }
+    public void setFechaFin(LocalDateTime fechaFin) { this.fechaFin = fechaFin; }
 
-    public void setFechaInicio(LocalDateTime fechaInicio) {
-        this.fechaInicio = fechaInicio;
-    }
+    public LocalDateTime getFechaPreparacion() { return fechaPreparacion; }
+    public void setFechaPreparacion(LocalDateTime fechaPreparacion) { this.fechaPreparacion = fechaPreparacion; }
 
-    public LocalDateTime getFechaFin() {
-        return fechaFin;
-    }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
 
-    public void setFechaFin(LocalDateTime fechaFin) {
-        this.fechaFin = fechaFin;
-    }
+    public String getCategoria() { return categoria; }
+    public void setCategoria(String categoria) { this.categoria = categoria; }
 
-    public LocalDateTime getFechaPreparacion() {
-        return fechaPreparacion;
-    }
-
-    public void setFechaPreparacion(LocalDateTime fechaPreparacion) {
-        this.fechaPreparacion = fechaPreparacion;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public String getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    }
-
-    public List<ItemPedido> getItems() {
-        return items;
-    }
+    public List<ItemPedido> getItems() { return items; }
 
     public void agregarItem(ItemPedido item) {
         items.add(item);
@@ -129,7 +89,9 @@ public class Pedido {
     }
 
     public boolean tieneItemsPendientes() {
-        return items.stream().anyMatch(item -> !"finalizado".equalsIgnoreCase(item.getEstado()));
+        return items.stream().anyMatch(item ->
+                !"entregado".equalsIgnoreCase(item.getEstado()) &&
+                !"cancelado".equalsIgnoreCase(item.getEstado()));
     }
 
     public void iniciarPreparacion() {
@@ -142,20 +104,26 @@ public class Pedido {
 
     public void cancelar() {
         if ("finalizado".equalsIgnoreCase(this.estado)) {
-            throw new IllegalStateException("No se puede cancelar un pedido entregado.");
+            throw new IllegalStateException("No se puede cancelar un pedido finalizado.");
         }
         this.estado = "cancelado";
         this.fechaFin = LocalDateTime.now();
     }
 
-    public void cambiarEstado(String estado) {
+    public void cambiarEstado(String nuevoEstado) {
         if (this.fechaFin != null) {
             throw new IllegalStateException("El pedido ya está finalizado.");
         }
-        this.estado = estado;
-
-        if ("pendiente".equalsIgnoreCase(estado)) {
-            this.fechaPreparacion = null;  // <<--- Limpia el timestamp viejo
+        if (!nuevoEstado.equalsIgnoreCase("pendiente") &&
+                !nuevoEstado.equalsIgnoreCase("en_preparacion") &&
+                !nuevoEstado.equalsIgnoreCase("listo") &&
+                !nuevoEstado.equalsIgnoreCase("finalizado") &&
+                !nuevoEstado.equalsIgnoreCase("cancelado")) {
+            throw new IllegalArgumentException("Estado de pedido inválido: " + nuevoEstado);
+        }
+        this.estado = nuevoEstado;
+        if ("pendiente".equalsIgnoreCase(nuevoEstado)) {
+            this.fechaPreparacion = null;
         }
     }
 
@@ -167,31 +135,6 @@ public class Pedido {
 
     @Override
     public String toString() {
-        return "Pedido{" +
-                "id=" + id +
-                ", estado='" + estado + '\'' +
-                ", fechaInicio=" + fechaInicio +
-                ", categoria='" + categoria + '\'' +
-                '}';
-    }
-
-    public PedidoView toView() {
-        PedidoView view = new PedidoView();
-        view.setId(this.id);
-        view.setMesaId(this.sesion.getMesa().getNumero());
-        view.setEstado(this.estado);
-        view.setCategoria(this.categoria);
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        if (this.fechaInicio != null) view.setFechaInicio(this.fechaInicio.format(formatter));
-        if (this.fechaFin != null) view.setFechaFin(this.fechaFin.format(formatter));
-        if (this.fechaPreparacion != null) view.setFechaPreparacion(this.fechaPreparacion.format(formatter));
-
-        List<ItemPedidoView> itemViews = this.items.stream()
-                .map(ItemPedido::toView)
-                .toList();
-        view.setItems(itemViews);
-
-        return view;
+        return "Pedido{id=" + id + ", estado='" + estado + "', fechaInicio=" + fechaInicio + ", categoria='" + categoria + "'}";
     }
 }

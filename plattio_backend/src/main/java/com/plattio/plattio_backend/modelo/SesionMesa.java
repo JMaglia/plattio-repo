@@ -2,6 +2,7 @@ package com.plattio.plattio_backend.modelo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.plattio.plattio_backend.mapper.EmpleadoMapper;
+import com.plattio.plattio_backend.mapper.PedidoMapper;
 import com.plattio.plattio_backend.views.PedidoView;
 import com.plattio.plattio_backend.views.SesionMesaView;
 import jakarta.persistence.*;
@@ -182,7 +183,7 @@ public class SesionMesa {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
         List<PedidoView> pedidosView = this.pedidos.stream()
-                .map(Pedido::toView)
+                .map(PedidoMapper::toView)
                 .collect(Collectors.toList());
 
         return new SesionMesaView(

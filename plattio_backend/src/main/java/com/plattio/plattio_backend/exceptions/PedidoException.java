@@ -2,7 +2,7 @@ package com.plattio.plattio_backend.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public class PedidoException extends Exception {
+public class PedidoException extends RuntimeException {
 
     private final HttpStatus status;
 

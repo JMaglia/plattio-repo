@@ -1,7 +1,6 @@
 package com.plattio.plattio_backend.datos;
 
 import com.plattio.plattio_backend.modelo.ItemPedido;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -10,12 +9,14 @@ import java.util.Optional;
 @Repository
 public class ItemPedidoDAO {
 
-    @Autowired
-    private ItemPedidoRepository itemPedidoRepository;
+    private final ItemPedidoRepository itemPedidoRepository;
 
-    // CRUD básico
-    public void guardar(ItemPedido item) {
-        itemPedidoRepository.save(item);
+    public ItemPedidoDAO(ItemPedidoRepository itemPedidoRepository) {
+        this.itemPedidoRepository = itemPedidoRepository;
+    }
+
+    public ItemPedido guardar(ItemPedido item) {
+        return itemPedidoRepository.save(item);
     }
 
     public void eliminar(Long id) {
@@ -30,7 +31,6 @@ public class ItemPedidoDAO {
         return itemPedidoRepository.findAll();
     }
 
-    // Consultas útiles
     public List<ItemPedido> obtenerPorPedido(Long pedidoId) {
         return itemPedidoRepository.findByPedidoId(pedidoId);
     }

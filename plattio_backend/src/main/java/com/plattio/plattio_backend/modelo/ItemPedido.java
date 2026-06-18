@@ -1,7 +1,5 @@
 package com.plattio.plattio_backend.modelo;
 
-import com.plattio.plattio_backend.mapper.PlatoMapper;
-import com.plattio.plattio_backend.views.ItemPedidoView;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -36,9 +34,7 @@ public class ItemPedido {
     private LocalDateTime fechaFin;
 
     @Column(nullable = false)
-    private String estado; // pendiente, en_preparacion, listo, entregado
-
-    // ---------- Constructores ----------
+    private String estado;
 
     public ItemPedido() {
         this.fechaInicio = LocalDateTime.now();
@@ -53,69 +49,29 @@ public class ItemPedido {
         this.nota = nota;
     }
 
-    // ---------- Getters y Setters ----------
+    public Long getId() { return id; }
 
-    public Long getId() {
-        return id;
-    }
+    public Pedido getPedido() { return pedido; }
+    public void setPedido(Pedido pedido) { this.pedido = pedido; }
 
-    public Pedido getPedido() {
-        return pedido;
-    }
+    public Plato getPlato() { return plato; }
+    public void setPlato(Plato plato) { this.plato = plato; }
 
-    public void setPedido(Pedido pedido) {
-        this.pedido = pedido;
-    }
+    public int getCantidad() { return cantidad; }
+    public void setCantidad(int cantidad) { this.cantidad = cantidad; }
 
-    public Plato getPlato() {
-        return plato;
-    }
+    public String getNota() { return nota; }
+    public void setNota(String nota) { this.nota = nota; }
 
-    public void setPlato(Plato plato) {
-        this.plato = plato;
-    }
+    public LocalDateTime getFechaInicio() { return fechaInicio; }
+    public void setFechaInicio(LocalDateTime fechaInicio) { this.fechaInicio = fechaInicio; }
 
-    public int getCantidad() {
-        return cantidad;
-    }
+    public LocalDateTime getFechaFin() { return fechaFin; }
+    public void setFechaFin(LocalDateTime fechaFin) { this.fechaFin = fechaFin; }
 
-    public void setCantidad(int cantidad) {
-        this.cantidad = cantidad;
-    }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
 
-    public String getNota() {
-        return nota;
-    }
-
-    public void setNota(String nota) {
-        this.nota = nota;
-    }
-
-    public LocalDateTime getFechaInicio() {
-        return fechaInicio;
-    }
-
-    public void setFechaInicio(LocalDateTime fechaInicio) {
-        this.fechaInicio = fechaInicio;
-    }
-
-    public LocalDateTime getFechaFin() {
-        return fechaFin;
-    }
-
-    public void setFechaFin(LocalDateTime fechaFin) {
-        this.fechaFin = fechaFin;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    // ---------- METODOS ----------
     public void iniciarPreparacion() {
         if (!"pendiente".equalsIgnoreCase(this.estado)) {
             throw new IllegalStateException("El ítem ya no está pendiente.");
@@ -154,30 +110,8 @@ public class ItemPedido {
         return plato.getPrecio().multiply(BigDecimal.valueOf(cantidad));
     }
 
-    // ---------- toString ----------
-
     @Override
     public String toString() {
-        return "ItemPedido{" +
-                "id=" + id +
-                ", cantidad=" + cantidad +
-                ", estado='" + estado + '\'' +
-                ", nota='" + nota + '\'' +
-                '}';
+        return "ItemPedido{id=" + id + ", cantidad=" + cantidad + ", estado='" + estado + "', nota='" + nota + "'}";
     }
-
-    public ItemPedidoView toView() {
-        return new ItemPedidoView(
-                this.id,
-                this.plato.getNombre(),
-                this.plato.getDescripcion(),
-                this.plato.getTiempoEstimado(),
-                this.nota,
-                "finalizado".equalsIgnoreCase(this.estado),
-                this.estado,
-                this.cantidad,
-                PlatoMapper.toView(this.plato)
-        );
-    }
-
 }
