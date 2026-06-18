@@ -1,12 +1,16 @@
 package com.plattio.plattio_backend.service;
 
-import com.plattio.plattio_backend.datos.*;
-import com.plattio.plattio_backend.exceptions.EmpleadoException;
+import com.plattio.plattio_backend.datos.EmpleadoDAO;
+import com.plattio.plattio_backend.datos.NotificacionDAO;
+import com.plattio.plattio_backend.datos.PedidoDAO;
+import com.plattio.plattio_backend.datos.SesionMesaDAO;
+import com.plattio.plattio_backend.dto.request.CrearNotificacionConPedidoRequest;
+import com.plattio.plattio_backend.dto.request.CrearNotificacionRequest;
 import com.plattio.plattio_backend.exceptions.NotificacionException;
-import com.plattio.plattio_backend.exceptions.PedidoException;
-import com.plattio.plattio_backend.exceptions.SesionMesaException;
-import com.plattio.plattio_backend.modelo.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.plattio.plattio_backend.modelo.Empleado;
+import com.plattio.plattio_backend.modelo.Notificacion;
+import com.plattio.plattio_backend.modelo.Pedido;
+import com.plattio.plattio_backend.modelo.SesionMesa;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -15,93 +19,69 @@ import java.util.List;
 @Service
 public class NotificacionService {
 
-    @Autowired
-    private NotificacionDAO notificacionDAO;
+    private final NotificacionDAO notificacionDAO;
+    private final SesionMesaDAO sesionMesaDAO;
+    private final EmpleadoDAO empleadoDAO;
+    private final PedidoDAO pedidoDAO;
 
-    @Autowired
-    private SesionMesaDAO sesionMesaDAO;
+    public NotificacionService(NotificacionDAO notificacionDAO, SesionMesaDAO sesionMesaDAO,
+                               EmpleadoDAO empleadoDAO, PedidoDAO pedidoDAO) {
+        this.notificacionDAO = notificacionDAO;
+        this.sesionMesaDAO = sesionMesaDAO;
+        this.empleadoDAO = empleadoDAO;
+        this.pedidoDAO = pedidoDAO;
+    }
 
-    @Autowired
-    private EmpleadoDAO empleadoDAO;
-
-    @Autowired
-    private PedidoDAO pedidoDAO;
-
-    public Notificacion obtenerPorId(Long id) throws NotificacionException {
+    public Notificacion obtenerPorId(Long id) {
         return notificacionDAO.buscarPorId(id)
                 .orElseThrow(() -> new NotificacionException("Notificación no encontrada con ID: " + id, HttpStatus.NOT_FOUND));
     }
 
-    public List<Notificacion> obtenerPorMozoYEstado(Long mozoId, String estado) throws NotificacionException {
-        List<Notificacion> notis;
+    public List<Notificacion> obtenerTodas() {
+        return notificacionDAO.obtenerTodas();
+    }
 
+    public List<Notificacion> obtenerPorMozoYEstado(Long mozoId, String estado) {
         if ("completada".equalsIgnoreCase(estado)) {
-            notis = notificacionDAO.buscarPorMozoCompletadas(mozoId, estado);
-        } else {
-            notis = notificacionDAO.buscarPorMozoYEstado(mozoId, estado);
+            return notificacionDAO.buscarPorMozoCompletadas(mozoId, estado);
         }
-        if (notis.isEmpty()) {
-            throw new NotificacionException("No hay notificaciones para este mozo con estado: " + estado, HttpStatus.NOT_FOUND);
-        }
-        return notis;
+        return notificacionDAO.buscarPorMozoYEstado(mozoId, estado);
     }
 
-    public Notificacion crearNotificacion(String mensaje, String tipo, Long mozoId, Long sesionId) throws EmpleadoException, SesionMesaException {
-        Empleado mozo = empleadoDAO.buscarPorId(mozoId)
-                .orElseThrow(() -> new EmpleadoException("Mozo no encontrado", HttpStatus.NOT_FOUND));
-
-        SesionMesa sesion = sesionMesaDAO.buscarPorId(sesionId)
-                .orElseThrow(() -> new SesionMesaException("Sesión no encontrada", HttpStatus.NOT_FOUND));
-
-        Notificacion n = new Notificacion(mensaje, tipo, mozo, sesion);
-        return notificacionDAO.guardar(n);
+    public void crearNotificacion(CrearNotificacionRequest request) {
+        Empleado mozo = empleadoDAO.buscarPorId(request.mozoId())
+                .orElseThrow(() -> new NotificacionException("Mozo no encontrado con ID: " + request.mozoId(), HttpStatus.NOT_FOUND));
+        SesionMesa sesion = sesionMesaDAO.buscarPorId(request.sesionId())
+                .orElseThrow(() -> new NotificacionException("Sesión no encontrada con ID: " + request.sesionId(), HttpStatus.NOT_FOUND));
+        notificacionDAO.guardar(new Notificacion(request.mensaje(), request.tipo(), mozo, sesion));
     }
 
-    public Notificacion crearNotificacion2(String mensaje, String tipo, Integer mesaNum, Long idPedido) throws EmpleadoException, SesionMesaException, PedidoException {
-
-        SesionMesa sesion = sesionMesaDAO.obtenerSesionActivaPorMesaNum(mesaNum)
-                .orElseThrow(() -> new SesionMesaException("Sesión no encontrada", HttpStatus.NOT_FOUND));
-
-        Pedido pedido = pedidoDAO.buscarPorId(idPedido)
-                .orElseThrow(() -> new PedidoException("Pedido no encontrado", HttpStatus.NOT_FOUND));
-
+    public void crearNotificacionConPedido(CrearNotificacionConPedidoRequest request) {
+        SesionMesa sesion = sesionMesaDAO.obtenerSesionActivaPorMesaNum(request.mesaNum())
+                .orElseThrow(() -> new NotificacionException("Sesión activa no encontrada para mesa: " + request.mesaNum(), HttpStatus.NOT_FOUND));
+        Pedido pedido = pedidoDAO.buscarPorId(request.pedidoId())
+                .orElseThrow(() -> new NotificacionException("Pedido no encontrado con ID: " + request.pedidoId(), HttpStatus.NOT_FOUND));
         Empleado mozo = empleadoDAO.buscarPorSesionId(sesion.getId())
-                .orElseThrow(() -> new EmpleadoException("Mozo no encontrado", HttpStatus.NOT_FOUND));
-
-        Notificacion n = new Notificacion(mensaje, tipo, mozo, sesion, pedido);
-        return notificacionDAO.guardar(n);
+                .orElseThrow(() -> new NotificacionException("Mozo no encontrado para la sesión: " + sesion.getId(), HttpStatus.NOT_FOUND));
+        notificacionDAO.guardar(new Notificacion(request.mensaje(), request.tipo(), mozo, sesion, pedido));
     }
 
-    public void marcarComoCompletada(Long id) throws NotificacionException {
-        Notificacion n = notificacionDAO.buscarPorId(id)
-                .orElseThrow(() -> new NotificacionException("Notificación no encontrada", HttpStatus.NOT_FOUND));
-
-        n.setEstado("completada");
+    public void marcarComoCompletada(Long id) {
+        Notificacion n = obtenerPorId(id);
+        n.completar();
         notificacionDAO.guardar(n);
     }
 
-    public List<Notificacion> obtenerTodas() {
-        return notificacionDAO.buscarTodas();
-    }
-
-    public void toggleEstado(Long id) throws NotificacionException {
-        Notificacion noti = obtenerPorId(id);
-        if ("completada".equalsIgnoreCase(noti.getEstado())) {
-            noti.setEstado("pendiente");
-        } else {
-            noti.setEstado("completada");
-        }
-        notificacionDAO.guardar(noti);
+    public void toggleEstado(Long id) {
+        Notificacion n = obtenerPorId(id);
+        n.alternarEstado();
+        notificacionDAO.guardar(n);
     }
 
     public void completarNotificacionesPorPedido(Long pedidoId) {
-        Notificacion noti = notificacionDAO.buscarPrimeraPorPedidoYEstado(pedidoId, "pendiente")
-                .orElse(null);
-
-        if (noti != null) {
-            noti.setEstado("completada");
-            notificacionDAO.guardar(noti);
-        }
+        notificacionDAO.buscarPrimeraPorPedidoYEstado(pedidoId, "pendiente").ifPresent(n -> {
+            n.completar();
+            notificacionDAO.guardar(n);
+        });
     }
-
 }

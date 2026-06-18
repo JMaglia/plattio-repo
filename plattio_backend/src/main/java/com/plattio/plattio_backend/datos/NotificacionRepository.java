@@ -2,10 +2,12 @@ package com.plattio.plattio_backend.datos;
 
 import com.plattio.plattio_backend.modelo.Notificacion;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface NotificacionRepository extends JpaRepository<Notificacion, Long> {
 
     List<Notificacion> findByMozoIdAndEstado(Long mozoId, String estado);
@@ -15,6 +17,4 @@ public interface NotificacionRepository extends JpaRepository<Notificacion, Long
     List<Notificacion> findByPedido_IdAndEstado(Long pedidoId, String estado);
 
     Optional<Notificacion> findFirstByPedido_IdAndEstado(Long pedidoId, String estado);
-
-
 }
