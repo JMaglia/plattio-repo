@@ -1,7 +1,6 @@
 package com.plattio.plattio_backend.datos;
 
 import com.plattio.plattio_backend.modelo.SesionMesa;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -10,12 +9,14 @@ import java.util.Optional;
 @Repository
 public class SesionMesaDAO {
 
-    @Autowired
-    private SesionMesaRepository sesionMesaRepository;
+    private final SesionMesaRepository sesionMesaRepository;
 
-    // CRUD
-    public void guardar(SesionMesa sesion) {
-        sesionMesaRepository.save(sesion);
+    public SesionMesaDAO(SesionMesaRepository sesionMesaRepository) {
+        this.sesionMesaRepository = sesionMesaRepository;
+    }
+
+    public SesionMesa guardar(SesionMesa sesion) {
+        return sesionMesaRepository.save(sesion);
     }
 
     public void eliminar(Long id) {
@@ -30,7 +31,6 @@ public class SesionMesaDAO {
         return sesionMesaRepository.findAll();
     }
 
-    // Consultas útiles
     public List<SesionMesa> obtenerActivas() {
         return sesionMesaRepository.findByFechaFinIsNull();
     }
@@ -50,5 +50,4 @@ public class SesionMesaDAO {
     public List<SesionMesa> obtenerSesionesFinalizadasPorMesa(Long mesaId) {
         return sesionMesaRepository.findByMesaIdAndFechaFinIsNotNull(mesaId);
     }
-
 }

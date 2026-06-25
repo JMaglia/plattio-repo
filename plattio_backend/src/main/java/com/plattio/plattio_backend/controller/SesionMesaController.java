@@ -1,12 +1,10 @@
 package com.plattio.plattio_backend.controller;
 
-import com.plattio.plattio_backend.exceptions.MesaException;
-import com.plattio.plattio_backend.exceptions.SesionMesaException;
-import com.plattio.plattio_backend.modelo.SesionMesa;
-import com.plattio.plattio_backend.service.MesaService;
+import com.plattio.plattio_backend.dto.request.IniciarSesionRequest;
+import com.plattio.plattio_backend.dto.request.ReasignarMozoRequest;
+import com.plattio.plattio_backend.mapper.SesionMesaMapper;
 import com.plattio.plattio_backend.service.SesionMesaService;
 import com.plattio.plattio_backend.views.SesionMesaView;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,78 +15,72 @@ import java.util.List;
 @RequestMapping("/sesiones")
 public class SesionMesaController {
 
-    @Autowired
-    private SesionMesaService sesionMesaService;
+    private final SesionMesaService sesionMesaService;
 
-    @Autowired
-    private MesaService mesaService;
+    public SesionMesaController(SesionMesaService sesionMesaService) {
+        this.sesionMesaService = sesionMesaService;
+    }
 
     @GetMapping
-    public ResponseEntity<List<SesionMesaView>> obtenerTodasLasSesiones() throws SesionMesaException {
+    public ResponseEntity<List<SesionMesaView>> obtenerTodasLasSesiones() {
         List<SesionMesaView> views = sesionMesaService.obtenerTodas().stream()
-                .map(SesionMesa::toView)
+                .map(SesionMesaMapper::toView)
                 .toList();
-        return new ResponseEntity<>(views, HttpStatus.OK);
+        return ResponseEntity.ok(views);
     }
 
     @GetMapping("/activas")
-    public ResponseEntity<List<SesionMesaView>> obtenerSesionesActivas() throws SesionMesaException {
+    public ResponseEntity<List<SesionMesaView>> obtenerSesionesActivas() {
         List<SesionMesaView> views = sesionMesaService.obtenerSesionesActivas().stream()
-                .map(SesionMesa::toView)
+                .map(SesionMesaMapper::toView)
                 .toList();
-        return new ResponseEntity<>(views, HttpStatus.OK);
+        return ResponseEntity.ok(views);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SesionMesaView> obtenerSesionPorId(@PathVariable Long id) throws SesionMesaException {
-        return new ResponseEntity<>(sesionMesaService.buscarPorId(id).toView(), HttpStatus.OK);
+    public ResponseEntity<SesionMesaView> obtenerSesionPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(SesionMesaMapper.toView(sesionMesaService.buscarPorId(id)));
     }
 
     @GetMapping("/numeroMesa/{numeroMesa}/activa")
-    public ResponseEntity<SesionMesaView> obtenerSesionActivaNumMesa(@PathVariable Integer numeroMesa) throws MesaException, SesionMesaException {
-        return new ResponseEntity<>(mesaService.obtenerSesionActivaNumMesa(numeroMesa).toView(), HttpStatus.OK);
+    public ResponseEntity<SesionMesaView> obtenerSesionActivaPorNumeroMesa(@PathVariable Integer numeroMesa) {
+        return ResponseEntity.ok(SesionMesaMapper.toView(sesionMesaService.obtenerSesionActivaPorNumeroMesa(numeroMesa)));
     }
 
     @GetMapping("/mesa/{mesaId}/activa")
-    public ResponseEntity<SesionMesaView> obtenerSesionActivaPorMesa(@PathVariable Long mesaId) throws SesionMesaException {
-        return new ResponseEntity<>(sesionMesaService.obtenerSesionActivaPorMesa(mesaId).toView(), HttpStatus.OK);
+    public ResponseEntity<SesionMesaView> obtenerSesionActivaPorMesa(@PathVariable Long mesaId) {
+        return ResponseEntity.ok(SesionMesaMapper.toView(sesionMesaService.obtenerSesionActivaPorMesa(mesaId)));
     }
 
     @GetMapping("/mozo/{mozoId}/activas")
-    public ResponseEntity<List<SesionMesaView>> obtenerSesionesActivasPorMozo(@PathVariable Long mozoId) throws SesionMesaException {
+    public ResponseEntity<List<SesionMesaView>> obtenerSesionesActivasPorMozo(@PathVariable Long mozoId) {
         List<SesionMesaView> views = sesionMesaService.obtenerSesionesActivasPorMozo(mozoId).stream()
-                .map(SesionMesa::toView)
+                .map(SesionMesaMapper::toView)
                 .toList();
-        return new ResponseEntity<>(views, HttpStatus.OK);
+        return ResponseEntity.ok(views);
     }
 
-    @PostMapping("/iniciar/{mesaId}/{tipoComensal}")
-    public ResponseEntity<String> iniciarSesionSinMozo(@PathVariable Long mesaId, @PathVariable String tipoComensal) throws SesionMesaException, MesaException {
-        sesionMesaService.iniciarSesion(mesaId, null, tipoComensal);
-        return new ResponseEntity<>("Sesión iniciada sin mozo", HttpStatus.CREATED);
+    @PostMapping("/iniciar")
+    public ResponseEntity<Void> iniciarSesion(@RequestBody IniciarSesionRequest request) {
+        sesionMesaService.iniciarSesion(request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PostMapping("/iniciar/{mesaId}/{mozoId}/{tipoComensal}")
-    public ResponseEntity<String> iniciarSesionConMozo(@PathVariable Long mesaId, @PathVariable Long mozoId, @PathVariable String tipoComensal) throws SesionMesaException, MesaException {
-        sesionMesaService.iniciarSesion(mesaId, mozoId, tipoComensal);
-        return new ResponseEntity<>("Sesión iniciada con mozo", HttpStatus.CREATED);
-    }
-
-    @PostMapping("/{sesionId}/finalizar")
-    public ResponseEntity<String> finalizarSesion(@PathVariable Long sesionId) throws SesionMesaException {
+    @PatchMapping("/{sesionId}/finalizar")
+    public ResponseEntity<Void> finalizarSesion(@PathVariable Long sesionId) {
         sesionMesaService.finalizarSesion(sesionId);
-        return new ResponseEntity<>("Sesión finalizada con éxito", HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{sesionId}/cerrarSiSinPedidos")
-    public ResponseEntity<String> cerrarSesionSiNoHayPedidos(@PathVariable Long sesionId) throws SesionMesaException {
+    @PatchMapping("/{sesionId}/cerrar")
+    public ResponseEntity<Void> cerrarSesionSiNoHayPedidos(@PathVariable Long sesionId) {
         sesionMesaService.cerrarSesionSiNoHayPedidos(sesionId);
-        return new ResponseEntity<>("Sesión cerrada si no tenía pedidos", HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{sesionId}/reasignarMozo/{nuevoMozoId}")
-    public ResponseEntity<String> reasignarMozoASesion(@PathVariable Long sesionId, @PathVariable Long nuevoMozoId) throws SesionMesaException {
-        sesionMesaService.reasignarMozo(sesionId, nuevoMozoId);
-        return new ResponseEntity<>("Mozo reasignado a la sesión con éxito", HttpStatus.OK);
+    @PatchMapping("/{sesionId}/mozo")
+    public ResponseEntity<Void> reasignarMozo(@PathVariable Long sesionId, @RequestBody ReasignarMozoRequest request) {
+        sesionMesaService.reasignarMozo(sesionId, request);
+        return ResponseEntity.ok().build();
     }
 }
