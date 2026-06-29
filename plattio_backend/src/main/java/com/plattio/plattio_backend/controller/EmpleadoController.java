@@ -9,6 +9,7 @@ import com.plattio.plattio_backend.mapper.EmpleadoMapper;
 import com.plattio.plattio_backend.modelo.Rol;
 import com.plattio.plattio_backend.service.EmpleadoService;
 import com.plattio.plattio_backend.views.EmpleadoView;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -66,20 +67,20 @@ public class EmpleadoController {
     }
 
     @PostMapping
-    public ResponseEntity<String> registrarEmpleado(@RequestBody RegistrarEmpleadoRequest request) {
+    public ResponseEntity<String> registrarEmpleado(@Valid @RequestBody RegistrarEmpleadoRequest request) {
         empleadoService.registrarEmpleado(request);
         return new ResponseEntity<>("Empleado registrado con éxito", HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<EmpleadoView> loginEmpleado(@RequestBody LoginRequest request) {
+    public ResponseEntity<EmpleadoView> loginEmpleado(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(EmpleadoMapper.toView(empleadoService.login(request.email(), request.password())));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<String> actualizarDatosEmpleado(
             @PathVariable Long id,
-            @RequestBody ActualizarEmpleadoRequest request) {
+            @Valid @RequestBody ActualizarEmpleadoRequest request) {
         empleadoService.actualizarDatos(id, request.nombre(), request.email());
         return ResponseEntity.ok("Datos del empleado actualizados con éxito");
     }
@@ -87,7 +88,7 @@ public class EmpleadoController {
     @PatchMapping("/{id}/rol")
     public ResponseEntity<String> cambiarRolEmpleado(
             @PathVariable Long id,
-            @RequestBody CambiarRolRequest request) {
+            @Valid @RequestBody CambiarRolRequest request) {
         empleadoService.cambiarRol(id, request.rol());
         return ResponseEntity.ok("Rol del empleado actualizado con éxito");
     }

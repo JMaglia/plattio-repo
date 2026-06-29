@@ -5,6 +5,7 @@ import com.plattio.plattio_backend.dto.request.CrearMesaRequest;
 import com.plattio.plattio_backend.mapper.MesaMapper;
 import com.plattio.plattio_backend.service.MesaService;
 import com.plattio.plattio_backend.views.MesaView;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -68,7 +69,7 @@ public class MesaController {
     }
 
     @PostMapping
-    public ResponseEntity<String> crearMesa(@RequestBody CrearMesaRequest request) {
+    public ResponseEntity<String> crearMesa(@Valid @RequestBody CrearMesaRequest request) {
         mesaService.crearMesa(request);
         return new ResponseEntity<>("Mesa creada con éxito", HttpStatus.CREATED);
     }
@@ -88,7 +89,7 @@ public class MesaController {
     @PatchMapping("/{id}/estado")
     public ResponseEntity<String> cambiarEstadoMesa(
             @PathVariable Long id,
-            @RequestBody CambiarEstadoMesaRequest request) {
+            @Valid @RequestBody CambiarEstadoMesaRequest request) {
         mesaService.cambiarEstado(id, request.estado());
         return ResponseEntity.ok("Estado de la mesa actualizado con éxito");
     }

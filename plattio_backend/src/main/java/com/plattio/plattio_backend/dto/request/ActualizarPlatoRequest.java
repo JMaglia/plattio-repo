@@ -1,11 +1,15 @@
 package com.plattio.plattio_backend.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 import java.math.BigDecimal;
 
 public record ActualizarPlatoRequest(
-        String nombre,
-        String descripcion,
-        BigDecimal precio,
-        String categoria,
-        Integer tiempoEstimado
+        @NotBlank String nombre,
+        @NotBlank String descripcion,
+        @NotNull @Positive BigDecimal precio,
+        @NotBlank String categoria,
+        @NotNull @Positive Integer tiempoEstimado
 ) {}

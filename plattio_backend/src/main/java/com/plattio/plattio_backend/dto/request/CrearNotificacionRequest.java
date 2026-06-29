@@ -1,3 +1,11 @@
 package com.plattio.plattio_backend.dto.request;
 
-public record CrearNotificacionRequest(String mensaje, String tipo, Long mozoId, Long sesionId) {}
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+public record CrearNotificacionRequest(
+        @NotBlank String mensaje,
+        @NotBlank String tipo,
+        @NotNull Long mozoId,
+        @NotNull Long sesionId
+) {}

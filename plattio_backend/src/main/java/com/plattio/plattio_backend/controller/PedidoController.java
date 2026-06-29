@@ -5,6 +5,7 @@ import com.plattio.plattio_backend.dto.request.CrearPedidoRequest;
 import com.plattio.plattio_backend.mapper.PedidoMapper;
 import com.plattio.plattio_backend.service.PedidoService;
 import com.plattio.plattio_backend.views.PedidoView;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -73,7 +74,7 @@ public class PedidoController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> crearPedido(@RequestBody CrearPedidoRequest request) {
+    public ResponseEntity<Void> crearPedido(@Valid @RequestBody CrearPedidoRequest request) {
         pedidoService.crearPedido(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -85,7 +86,7 @@ public class PedidoController {
     }
 
     @PatchMapping("/{id}/estado")
-    public ResponseEntity<Void> cambiarEstado(@PathVariable Long id, @RequestBody CambiarEstadoPedidoRequest request) {
+    public ResponseEntity<Void> cambiarEstado(@PathVariable Long id, @Valid @RequestBody CambiarEstadoPedidoRequest request) {
         pedidoService.cambiarEstado(id, request.estado());
         return ResponseEntity.ok().build();
     }

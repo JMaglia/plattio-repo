@@ -1,3 +1,5 @@
 package com.plattio.plattio_backend.dto.request;
 
-public record ReasignarMozoRequest(Long mozoId) {}
+import jakarta.validation.constraints.NotNull;
+
+public record ReasignarMozoRequest(@NotNull Long mozoId) {}

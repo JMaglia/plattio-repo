@@ -1,3 +1,6 @@
 package com.plattio.plattio_backend.dto.request;
 
-public record AgregarItemRequest(Long platoId, int cantidad, String nota) {}
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
+public record AgregarItemRequest(@NotNull Long platoId, @Positive int cantidad, String nota) {}

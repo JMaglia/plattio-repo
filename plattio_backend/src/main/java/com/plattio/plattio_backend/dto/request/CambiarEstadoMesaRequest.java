@@ -1,3 +1,5 @@
 package com.plattio.plattio_backend.dto.request;
 
-public record CambiarEstadoMesaRequest(String estado) {}
+import jakarta.validation.constraints.NotBlank;
+
+public record CambiarEstadoMesaRequest(@NotBlank String estado) {}

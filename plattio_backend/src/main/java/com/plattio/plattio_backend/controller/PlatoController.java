@@ -6,6 +6,7 @@ import com.plattio.plattio_backend.dto.request.CrearPlatoRequest;
 import com.plattio.plattio_backend.mapper.PlatoMapper;
 import com.plattio.plattio_backend.service.PlatoService;
 import com.plattio.plattio_backend.views.PlatoView;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -77,7 +78,7 @@ public class PlatoController {
     }
 
     @PostMapping
-    public ResponseEntity<String> crearPlato(@RequestBody CrearPlatoRequest request) {
+    public ResponseEntity<String> crearPlato(@Valid @RequestBody CrearPlatoRequest request) {
         platoService.crearPlato(request);
         return new ResponseEntity<>("Plato creado con éxito", HttpStatus.CREATED);
     }
@@ -85,7 +86,7 @@ public class PlatoController {
     @PutMapping("/{id}")
     public ResponseEntity<String> actualizarPlato(
             @PathVariable Long id,
-            @RequestBody ActualizarPlatoRequest request) {
+            @Valid @RequestBody ActualizarPlatoRequest request) {
         platoService.actualizarPlato(id, request);
         return ResponseEntity.ok("Plato actualizado con éxito");
     }
@@ -93,7 +94,7 @@ public class PlatoController {
     @PatchMapping("/{id}/precio")
     public ResponseEntity<String> cambiarPrecioPlato(
             @PathVariable Long id,
-            @RequestBody CambiarPrecioRequest request) {
+            @Valid @RequestBody CambiarPrecioRequest request) {
         platoService.cambiarPrecio(id, request.precio());
         return ResponseEntity.ok("Precio del plato actualizado con éxito");
     }

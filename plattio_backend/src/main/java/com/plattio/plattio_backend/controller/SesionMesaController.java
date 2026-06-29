@@ -5,6 +5,7 @@ import com.plattio.plattio_backend.dto.request.ReasignarMozoRequest;
 import com.plattio.plattio_backend.mapper.SesionMesaMapper;
 import com.plattio.plattio_backend.service.SesionMesaService;
 import com.plattio.plattio_backend.views.SesionMesaView;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -61,7 +62,7 @@ public class SesionMesaController {
     }
 
     @PostMapping("/iniciar")
-    public ResponseEntity<Void> iniciarSesion(@RequestBody IniciarSesionRequest request) {
+    public ResponseEntity<Void> iniciarSesion(@Valid @RequestBody IniciarSesionRequest request) {
         sesionMesaService.iniciarSesion(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -79,7 +80,7 @@ public class SesionMesaController {
     }
 
     @PatchMapping("/{sesionId}/mozo")
-    public ResponseEntity<Void> reasignarMozo(@PathVariable Long sesionId, @RequestBody ReasignarMozoRequest request) {
+    public ResponseEntity<Void> reasignarMozo(@PathVariable Long sesionId, @Valid @RequestBody ReasignarMozoRequest request) {
         sesionMesaService.reasignarMozo(sesionId, request);
         return ResponseEntity.ok().build();
     }

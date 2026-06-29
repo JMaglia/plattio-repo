@@ -1,3 +1,6 @@
 package com.plattio.plattio_backend.dto.request;
 
-public record IniciarSesionRequest(Long mesaId, Long mozoId, String tipoComensal) {}
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+public record IniciarSesionRequest(@NotNull Long mesaId, Long mozoId, @NotBlank String tipoComensal) {}

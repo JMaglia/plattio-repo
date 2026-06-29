@@ -4,6 +4,7 @@ import com.plattio.plattio_backend.dto.request.AgregarItemRequest;
 import com.plattio.plattio_backend.mapper.ItemPedidoMapper;
 import com.plattio.plattio_backend.service.ItemPedidoService;
 import com.plattio.plattio_backend.views.ItemPedidoView;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,7 +52,7 @@ public class ItemPedidoController {
     }
 
     @PostMapping("/pedido/{pedidoId}")
-    public ResponseEntity<Void> agregarItemAPedido(@PathVariable Long pedidoId, @RequestBody AgregarItemRequest request) {
+    public ResponseEntity<Void> agregarItemAPedido(@PathVariable Long pedidoId, @Valid @RequestBody AgregarItemRequest request) {
         itemPedidoService.agregarItem(pedidoId, request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
