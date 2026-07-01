@@ -8,6 +8,7 @@ import com.plattio.plattio_backend.modelo.Pedido;
 import com.plattio.plattio_backend.modelo.SesionMesa;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -77,6 +78,7 @@ public class PedidoService {
         pedidoDAO.guardar(pedido);
     }
 
+    @Transactional
     public void cambiarEstado(Long pedidoId, String estado) {
         Pedido pedido = obtenerPorId(pedidoId);
         if ("en_preparacion".equalsIgnoreCase(estado)) {

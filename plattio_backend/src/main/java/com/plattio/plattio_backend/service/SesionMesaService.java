@@ -13,6 +13,7 @@ import com.plattio.plattio_backend.modelo.Mesa;
 import com.plattio.plattio_backend.modelo.SesionMesa;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -58,6 +59,7 @@ public class SesionMesaService {
         return sesionMesaDAO.obtenerSesionesActivasPorMozo(mozoId);
     }
 
+    @Transactional
     public void iniciarSesion(IniciarSesionRequest request) {
         Mesa mesa = mesaDAO.buscarPorId(request.mesaId())
                 .orElseThrow(() -> new MesaException("Mesa no encontrada con ID: " + request.mesaId(), HttpStatus.NOT_FOUND));
