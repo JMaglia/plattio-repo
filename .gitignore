@@ -5,6 +5,9 @@ plattio_backend/target/
 *.ear
 !**/maven-wrapper.jar
 
+# Credenciales locales de base de datos (no versionar)
+application-local.properties
+
 # Frontend - Node
 plattio_frontend/node_modules/
 plattio_frontend/build/
