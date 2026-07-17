@@ -6,6 +6,7 @@ import com.plattio.plattio_backend.exceptions.EmpleadoException;
 import com.plattio.plattio_backend.modelo.Empleado;
 import com.plattio.plattio_backend.modelo.Rol;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,9 +16,11 @@ import java.util.Optional;
 public class EmpleadoService {
 
     private final EmpleadoDAO empleadoDAO;
+    private final PasswordEncoder passwordEncoder;
 
-    public EmpleadoService(EmpleadoDAO empleadoDAO) {
+    public EmpleadoService(EmpleadoDAO empleadoDAO, PasswordEncoder passwordEncoder) {
         this.empleadoDAO = empleadoDAO;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<Empleado> obtenerTodos() {
@@ -49,12 +52,13 @@ public class EmpleadoService {
         if (request.rol() == null) {
             throw new EmpleadoException("El rol es requerido.", HttpStatus.BAD_REQUEST);
         }
-        empleadoDAO.guardar(new Empleado(request.nombre(), request.email(), request.password(), request.rol()));
+        String passwordHasheada = passwordEncoder.encode(request.password());
+        empleadoDAO.guardar(new Empleado(request.nombre(), request.email(), passwordHasheada, request.rol()));
     }
 
     public Empleado login(String email, String password) {
         Empleado empleado = buscarPorEmail(email);
-        if (!empleado.validarPassword(password)) {
+        if (!passwordEncoder.matches(password, empleado.getPassword())) {
             throw new EmpleadoException("Contraseña incorrecta", HttpStatus.UNAUTHORIZED);
         }
         return empleado;

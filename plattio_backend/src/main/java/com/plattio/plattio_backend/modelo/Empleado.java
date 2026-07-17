@@ -45,10 +45,6 @@ public class Empleado {
     public Rol getRol() { return rol; }
     public void setRol(Rol rol) { this.rol = rol; }
 
-    public boolean validarPassword(String passwordIngresada) {
-        return this.password.equals(passwordIngresada);
-    }
-
     public boolean esMozo() { return this.rol == Rol.MOZO; }
     public boolean esCocinero() { return this.rol == Rol.COCINERO; }
     public boolean esAdmin() { return this.rol == Rol.ADMIN; }
