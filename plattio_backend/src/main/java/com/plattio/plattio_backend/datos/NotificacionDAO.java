@@ -24,7 +24,7 @@ public class NotificacionDAO {
     }
 
     public List<Notificacion> obtenerTodas() {
-        return notificacionRepository.findAll();
+        return notificacionRepository.findAllConSesionYMesa();
     }
 
     public void eliminarPorId(Long id) {
@@ -32,11 +32,11 @@ public class NotificacionDAO {
     }
 
     public List<Notificacion> buscarPorMozoYEstado(Long mozoId, String estado) {
-        return notificacionRepository.findByMozoIdAndEstado(mozoId, estado);
+        return notificacionRepository.findByMozoIdAndEstadoConSesionYMesa(mozoId, estado);
     }
 
     public List<Notificacion> buscarPorMozoCompletadas(Long mozoId, String estado) {
-        return notificacionRepository.findByMozo_IdAndEstadoOrderByIdDesc(mozoId, estado);
+        return notificacionRepository.findByMozoIdAndEstadoConSesionYMesaOrderByIdDesc(mozoId, estado);
     }
 
     public List<Notificacion> buscarPorPedidoYEstado(Long pedidoId, String estado) {

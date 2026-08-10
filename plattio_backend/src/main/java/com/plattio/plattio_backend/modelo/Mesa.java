@@ -23,7 +23,7 @@ public class Mesa {
     @Column(name = "qr_token", unique = true)
     private String qrToken;
 
-    @OneToMany(mappedBy = "mesa", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "mesa", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<SesionMesa> sesiones = new ArrayList<>();
 
     public Mesa() {

@@ -34,7 +34,7 @@ public class Pedido {
     @Column
     private String categoria;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPedido> items = new ArrayList<>();
 
     public Pedido() {

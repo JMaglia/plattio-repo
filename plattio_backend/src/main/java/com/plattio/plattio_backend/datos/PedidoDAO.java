@@ -24,19 +24,19 @@ public class PedidoDAO {
     }
 
     public Optional<Pedido> buscarPorId(Long id) {
-        return pedidoRepository.findById(id);
+        return pedidoRepository.findByIdConDetalle(id);
     }
 
     public List<Pedido> obtenerTodos() {
-        return pedidoRepository.findAll();
+        return pedidoRepository.findAllConDetalle();
     }
 
     public List<Pedido> obtenerPorSesion(Long sesionId) {
-        return pedidoRepository.findBySesionId(sesionId);
+        return pedidoRepository.findBySesionIdConDetalle(sesionId);
     }
 
     public List<Pedido> obtenerPorEstado(String estado) {
-        return pedidoRepository.findByEstado(estado);
+        return pedidoRepository.findByEstadoConDetalle(estado);
     }
 
     public List<Pedido> obtenerPedidosActivos() {
@@ -48,10 +48,14 @@ public class PedidoDAO {
     }
 
     public List<Pedido> buscarPendientesMozo(List<String> estados, Long mozoId) {
-        return pedidoRepository.findByEstadoInAndSesion_Mozo_Id(estados, mozoId);
+        return pedidoRepository.findByEstadoInAndSesionMozoIdConDetalle(estados, mozoId);
     }
 
     public List<Pedido> obtenerPedidosListosPorMozo(Long mozoId) {
-        return pedidoRepository.findByEstadoAndSesion_Mozo_Id("listo", mozoId);
+        return pedidoRepository.findByEstadoAndSesionMozoIdConDetalle("listo", mozoId);
+    }
+
+    public List<Pedido> obtenerPorSesionIdsConItems(List<Long> sesionIds) {
+        return pedidoRepository.findBySesionIdInConItems(sesionIds);
     }
 }

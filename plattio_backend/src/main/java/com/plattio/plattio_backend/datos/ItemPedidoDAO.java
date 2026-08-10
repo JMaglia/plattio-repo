@@ -32,15 +32,15 @@ public class ItemPedidoDAO {
     }
 
     public List<ItemPedido> obtenerPorPedido(Long pedidoId) {
-        return itemPedidoRepository.findByPedidoId(pedidoId);
+        return itemPedidoRepository.findByPedidoIdConPlato(pedidoId);
     }
 
     public List<ItemPedido> obtenerPorEstado(String estado) {
-        return itemPedidoRepository.findByEstado(estado);
+        return itemPedidoRepository.findByEstadoConPlato(estado);
     }
 
     public List<ItemPedido> obtenerActivos() {
-        return itemPedidoRepository.findByFechaFinIsNull();
+        return itemPedidoRepository.findByFechaFinIsNullConPlato();
     }
 
     public List<ItemPedido> obtenerPorPedidoYEstado(Long pedidoId, String estado) {

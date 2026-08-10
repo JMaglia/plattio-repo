@@ -2,6 +2,7 @@ package com.plattio.plattio_backend.service;
 
 import com.plattio.plattio_backend.datos.EmpleadoDAO;
 import com.plattio.plattio_backend.datos.MesaDAO;
+import com.plattio.plattio_backend.datos.PedidoDAO;
 import com.plattio.plattio_backend.datos.SesionMesaDAO;
 import com.plattio.plattio_backend.dto.request.IniciarSesionRequest;
 import com.plattio.plattio_backend.dto.request.ReasignarMozoRequest;
@@ -23,40 +24,70 @@ public class SesionMesaService {
     private final SesionMesaDAO sesionMesaDAO;
     private final MesaDAO mesaDAO;
     private final EmpleadoDAO empleadoDAO;
+    private final PedidoDAO pedidoDAO;
 
-    public SesionMesaService(SesionMesaDAO sesionMesaDAO, MesaDAO mesaDAO, EmpleadoDAO empleadoDAO) {
+    public SesionMesaService(SesionMesaDAO sesionMesaDAO, MesaDAO mesaDAO, EmpleadoDAO empleadoDAO, PedidoDAO pedidoDAO) {
         this.sesionMesaDAO = sesionMesaDAO;
         this.mesaDAO = mesaDAO;
         this.empleadoDAO = empleadoDAO;
+        this.pedidoDAO = pedidoDAO;
     }
 
+    @Transactional(readOnly = true)
     public List<SesionMesa> obtenerTodas() {
-        return sesionMesaDAO.obtenerTodas();
+        List<SesionMesa> sesiones = sesionMesaDAO.obtenerTodas();
+        hidratarItemsDePedidos(sesiones);
+        return sesiones;
     }
 
+    @Transactional(readOnly = true)
     public List<SesionMesa> obtenerSesionesActivas() {
-        return sesionMesaDAO.obtenerActivas();
+        List<SesionMesa> sesiones = sesionMesaDAO.obtenerActivas();
+        hidratarItemsDePedidos(sesiones);
+        return sesiones;
     }
 
+    @Transactional(readOnly = true)
     public SesionMesa buscarPorId(Long id) {
-        return sesionMesaDAO.buscarPorId(id)
+        SesionMesa sesion = sesionMesaDAO.buscarPorId(id)
                 .orElseThrow(() -> new SesionMesaException("Sesión de mesa no encontrada con ID: " + id, HttpStatus.NOT_FOUND));
+        hidratarItemsDePedidos(List.of(sesion));
+        return sesion;
     }
 
+    @Transactional(readOnly = true)
     public SesionMesa obtenerSesionActivaPorMesa(Long mesaId) {
-        return sesionMesaDAO.obtenerSesionActivaPorMesa(mesaId)
+        SesionMesa sesion = sesionMesaDAO.obtenerSesionActivaPorMesa(mesaId)
                 .orElseThrow(() -> new SesionMesaException("No hay sesión activa para la mesa con ID: " + mesaId, HttpStatus.NOT_FOUND));
+        hidratarItemsDePedidos(List.of(sesion));
+        return sesion;
     }
 
+    @Transactional(readOnly = true)
     public SesionMesa obtenerSesionActivaPorNumeroMesa(Integer numeroMesa) {
-        return sesionMesaDAO.obtenerSesionActivaPorMesaNum(numeroMesa)
+        SesionMesa sesion = sesionMesaDAO.obtenerSesionActivaPorMesaNum(numeroMesa)
                 .orElseThrow(() -> new SesionMesaException("No hay sesión activa para la mesa número: " + numeroMesa, HttpStatus.NOT_FOUND));
+        hidratarItemsDePedidos(List.of(sesion));
+        return sesion;
     }
 
+    @Transactional(readOnly = true)
     public List<SesionMesa> obtenerSesionesActivasPorMozo(Long mozoId) {
         empleadoDAO.buscarPorId(mozoId)
                 .orElseThrow(() -> new EmpleadoException("Mozo no encontrado con ID: " + mozoId, HttpStatus.NOT_FOUND));
-        return sesionMesaDAO.obtenerSesionesActivasPorMozo(mozoId);
+        List<SesionMesa> sesiones = sesionMesaDAO.obtenerSesionesActivasPorMozo(mozoId);
+        hidratarItemsDePedidos(sesiones);
+        return sesiones;
+    }
+
+    // Los Pedido de esta query ya están en la persistence context (cargados junto con las sesiones),
+    // así que Hibernate fusiona sus items en esas mismas entidades sin duplicarlas.
+    private void hidratarItemsDePedidos(List<SesionMesa> sesiones) {
+        List<Long> sesionIds = sesiones.stream().map(SesionMesa::getId).toList();
+        if (sesionIds.isEmpty()) {
+            return;
+        }
+        pedidoDAO.obtenerPorSesionIdsConItems(sesionIds);
     }
 
     @Transactional

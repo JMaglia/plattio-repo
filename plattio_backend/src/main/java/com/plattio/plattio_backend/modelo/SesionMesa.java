@@ -15,11 +15,11 @@ public class SesionMesa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mesa_id")
     private Mesa mesa;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mozo_id")
     private Empleado mozo;
 
@@ -32,7 +32,7 @@ public class SesionMesa {
     @Column(name = "tipo_comensal")
     private String tipoComensal;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "sesion", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sesion", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pedido> pedidos = new ArrayList<>();
 
     public SesionMesa() {

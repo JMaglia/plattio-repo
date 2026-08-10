@@ -24,27 +24,27 @@ public class SesionMesaDAO {
     }
 
     public Optional<SesionMesa> buscarPorId(Long id) {
-        return sesionMesaRepository.findById(id);
+        return sesionMesaRepository.findByIdConMesaYMozoYPedidos(id);
     }
 
     public List<SesionMesa> obtenerTodas() {
-        return sesionMesaRepository.findAll();
+        return sesionMesaRepository.findAllConMesaYMozoYPedidos();
     }
 
     public List<SesionMesa> obtenerActivas() {
-        return sesionMesaRepository.findByFechaFinIsNull();
+        return sesionMesaRepository.findByFechaFinIsNullConMesaYMozoYPedidos();
     }
 
     public Optional<SesionMesa> obtenerSesionActivaPorMesa(Long mesaId) {
-        return sesionMesaRepository.findByMesaIdAndFechaFinIsNull(mesaId);
+        return sesionMesaRepository.findByMesaIdAndFechaFinIsNullConMesaYMozoYPedidos(mesaId);
     }
 
     public Optional<SesionMesa> obtenerSesionActivaPorMesaNum(Integer mesaNum) {
-        return sesionMesaRepository.findByMesaNumeroAndFechaFinIsNull(mesaNum);
+        return sesionMesaRepository.findByMesaNumeroAndFechaFinIsNullConMesaYMozoYPedidos(mesaNum);
     }
 
     public List<SesionMesa> obtenerSesionesActivasPorMozo(Long mozoId) {
-        return sesionMesaRepository.findByMozoIdAndFechaFinIsNull(mozoId);
+        return sesionMesaRepository.findByMozoIdAndFechaFinIsNullConMesaYMozoYPedidos(mozoId);
     }
 
     public List<SesionMesa> obtenerSesionesFinalizadasPorMesa(Long mesaId) {
