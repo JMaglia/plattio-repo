@@ -12,6 +12,8 @@ import com.plattio.plattio_backend.exceptions.SesionMesaException;
 import com.plattio.plattio_backend.modelo.Empleado;
 import com.plattio.plattio_backend.modelo.Mesa;
 import com.plattio.plattio_backend.modelo.SesionMesa;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,8 @@ import java.util.List;
 
 @Service
 public class SesionMesaService {
+
+    private static final Logger log = LoggerFactory.getLogger(SesionMesaService.class);
 
     private final SesionMesaDAO sesionMesaDAO;
     private final MesaDAO mesaDAO;
@@ -110,6 +114,8 @@ public class SesionMesaService {
         mesa.agregarSesion(sesion);
         sesionMesaDAO.guardar(sesion);
         mesaDAO.guardar(mesa);
+        log.info("Sesión {} iniciada en mesa {} con mozo {}", sesion.getId(), mesa.getNumero(),
+                mozo != null ? mozo.getId() : "sin asignar");
     }
 
     public void finalizarSesion(Long sesionId) {
@@ -119,12 +125,14 @@ public class SesionMesaService {
         }
         sesion.finalizar();
         sesionMesaDAO.guardar(sesion);
+        log.info("Sesión {} finalizada", sesionId);
     }
 
     public void cerrarSesionSiNoHayPedidos(Long sesionId) {
         SesionMesa sesion = buscarPorId(sesionId);
         sesion.cerrarSiNoHayPedidos();
         sesionMesaDAO.guardar(sesion);
+        log.info("Sesión {} cerrada por falta de pedidos", sesionId);
     }
 
     public void reasignarMozo(Long sesionId, ReasignarMozoRequest request) {

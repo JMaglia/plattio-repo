@@ -6,6 +6,8 @@ import com.plattio.plattio_backend.dto.request.CrearPedidoRequest;
 import com.plattio.plattio_backend.exceptions.PedidoException;
 import com.plattio.plattio_backend.modelo.Pedido;
 import com.plattio.plattio_backend.modelo.SesionMesa;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,8 @@ import java.util.List;
 
 @Service
 public class PedidoService {
+
+    private static final Logger log = LoggerFactory.getLogger(PedidoService.class);
 
     private final PedidoDAO pedidoDAO;
     private final SesionMesaDAO sesionMesaDAO;
@@ -64,18 +68,21 @@ public class PedidoService {
         Pedido pedido = obtenerPorId(pedidoId);
         pedido.iniciarPreparacion();
         pedidoDAO.guardar(pedido);
+        log.info("Pedido {} cambia a estado {}", pedidoId, pedido.getEstado());
     }
 
     public void finalizarPedido(Long pedidoId) {
         Pedido pedido = obtenerPorId(pedidoId);
         pedido.finalizar();
         pedidoDAO.guardar(pedido);
+        log.info("Pedido {} cambia a estado {}", pedidoId, pedido.getEstado());
     }
 
     public void cancelarPedido(Long pedidoId) {
         Pedido pedido = obtenerPorId(pedidoId);
         pedido.cancelar();
         pedidoDAO.guardar(pedido);
+        log.info("Pedido {} cambia a estado {}", pedidoId, pedido.getEstado());
     }
 
     @Transactional
@@ -90,6 +97,7 @@ public class PedidoService {
             notificacionService.completarNotificacionesPorPedido(pedidoId);
         }
         pedidoDAO.guardar(pedido);
+        log.info("Pedido {} cambia a estado {}", pedidoId, pedido.getEstado());
     }
 
     public BigDecimal calcularTotalPedido(Long pedidoId) {

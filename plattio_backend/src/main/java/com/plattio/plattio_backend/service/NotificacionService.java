@@ -11,6 +11,8 @@ import com.plattio.plattio_backend.modelo.Empleado;
 import com.plattio.plattio_backend.modelo.Notificacion;
 import com.plattio.plattio_backend.modelo.Pedido;
 import com.plattio.plattio_backend.modelo.SesionMesa;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,8 @@ import java.util.List;
 
 @Service
 public class NotificacionService {
+
+    private static final Logger log = LoggerFactory.getLogger(NotificacionService.class);
 
     private final NotificacionDAO notificacionDAO;
     private final SesionMesaDAO sesionMesaDAO;
@@ -53,7 +57,8 @@ public class NotificacionService {
                 .orElseThrow(() -> new NotificacionException("Mozo no encontrado con ID: " + request.mozoId(), HttpStatus.NOT_FOUND));
         SesionMesa sesion = sesionMesaDAO.buscarPorId(request.sesionId())
                 .orElseThrow(() -> new NotificacionException("Sesión no encontrada con ID: " + request.sesionId(), HttpStatus.NOT_FOUND));
-        notificacionDAO.guardar(new Notificacion(request.mensaje(), request.tipo(), mozo, sesion));
+        Notificacion notificacion = notificacionDAO.guardar(new Notificacion(request.mensaje(), request.tipo(), mozo, sesion));
+        log.info("Notificación {} creada para mozo {} (sesión {})", notificacion.getId(), mozo.getId(), sesion.getId());
     }
 
     public void crearNotificacionConPedido(CrearNotificacionConPedidoRequest request) {
@@ -63,7 +68,8 @@ public class NotificacionService {
                 .orElseThrow(() -> new NotificacionException("Pedido no encontrado con ID: " + request.pedidoId(), HttpStatus.NOT_FOUND));
         Empleado mozo = empleadoDAO.buscarPorSesionId(sesion.getId())
                 .orElseThrow(() -> new NotificacionException("Mozo no encontrado para la sesión: " + sesion.getId(), HttpStatus.NOT_FOUND));
-        notificacionDAO.guardar(new Notificacion(request.mensaje(), request.tipo(), mozo, sesion, pedido));
+        Notificacion notificacion = notificacionDAO.guardar(new Notificacion(request.mensaje(), request.tipo(), mozo, sesion, pedido));
+        log.info("Notificación {} creada para pedido {} (sesión {}, mozo {})", notificacion.getId(), pedido.getId(), sesion.getId(), mozo.getId());
     }
 
     public void marcarComoCompletada(Long id) {

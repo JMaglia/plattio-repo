@@ -6,6 +6,8 @@ import com.plattio.plattio_backend.exceptions.ItemPedidoException;
 import com.plattio.plattio_backend.modelo.ItemPedido;
 import com.plattio.plattio_backend.modelo.Pedido;
 import com.plattio.plattio_backend.modelo.Plato;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,8 @@ import java.util.List;
 
 @Service
 public class ItemPedidoService {
+
+    private static final Logger log = LoggerFactory.getLogger(ItemPedidoService.class);
 
     private final ItemPedidoDAO itemPedidoDAO;
     private final PedidoService pedidoService;
@@ -54,24 +58,28 @@ public class ItemPedidoService {
         ItemPedido item = buscarItem(itemId);
         item.iniciarPreparacion();
         itemPedidoDAO.guardar(item);
+        log.info("Ítem {} cambia a estado {}", itemId, item.getEstado());
     }
 
     public void marcarListo(Long itemId) {
         ItemPedido item = buscarItem(itemId);
         item.marcarListo();
         itemPedidoDAO.guardar(item);
+        log.info("Ítem {} cambia a estado {}", itemId, item.getEstado());
     }
 
     public void entregarItem(Long itemId) {
         ItemPedido item = buscarItem(itemId);
         item.entregar();
         itemPedidoDAO.guardar(item);
+        log.info("Ítem {} cambia a estado {}", itemId, item.getEstado());
     }
 
     public void cancelarItem(Long itemId) {
         ItemPedido item = buscarItem(itemId);
         item.cancelar();
         itemPedidoDAO.guardar(item);
+        log.info("Ítem {} cambia a estado {}", itemId, item.getEstado());
     }
 
     public BigDecimal calcularSubtotal(Long itemId) {
