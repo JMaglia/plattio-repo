@@ -1,6 +1,8 @@
 package com.plattio.plattio_backend.datos;
 
 import com.plattio.plattio_backend.modelo.Pedido;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,11 +27,6 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
     List<Pedido> findByEstadoInAndSesion_Mozo_Id(List<String> estados, Long mozoId);
 
     List<Pedido> findByEstadoAndSesion_Mozo_Id(String estado, Long mozoId);
-
-    @Query("SELECT DISTINCT p FROM Pedido p " +
-           "LEFT JOIN FETCH p.sesion s LEFT JOIN FETCH s.mesa " +
-           "LEFT JOIN FETCH p.items i LEFT JOIN FETCH i.plato")
-    List<Pedido> findAllConDetalle();
 
     @Query("SELECT DISTINCT p FROM Pedido p " +
            "LEFT JOIN FETCH p.sesion s LEFT JOIN FETCH s.mesa " +
@@ -65,4 +62,13 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
            "LEFT JOIN FETCH p.items i LEFT JOIN FETCH i.plato " +
            "WHERE p.sesion.id IN :sesionIds")
     List<Pedido> findBySesionIdInConItems(@Param("sesionIds") List<Long> sesionIds);
+
+    @Query(value = "SELECT p.id FROM Pedido p", countQuery = "SELECT count(p) FROM Pedido p")
+    Page<Long> findAllIds(Pageable pageable);
+
+    @Query("SELECT DISTINCT p FROM Pedido p " +
+           "LEFT JOIN FETCH p.sesion s LEFT JOIN FETCH s.mesa " +
+           "LEFT JOIN FETCH p.items i LEFT JOIN FETCH i.plato " +
+           "WHERE p.id IN :ids")
+    List<Pedido> findByIdInConDetalle(@Param("ids") List<Long> ids);
 }

@@ -1,6 +1,8 @@
 package com.plattio.plattio_backend.datos;
 
 import com.plattio.plattio_backend.modelo.Pedido;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -25,10 +27,6 @@ public class PedidoDAO {
 
     public Optional<Pedido> buscarPorId(Long id) {
         return pedidoRepository.findByIdConDetalle(id);
-    }
-
-    public List<Pedido> obtenerTodos() {
-        return pedidoRepository.findAllConDetalle();
     }
 
     public List<Pedido> obtenerPorSesion(Long sesionId) {
@@ -57,5 +55,13 @@ public class PedidoDAO {
 
     public List<Pedido> obtenerPorSesionIdsConItems(List<Long> sesionIds) {
         return pedidoRepository.findBySesionIdInConItems(sesionIds);
+    }
+
+    public Page<Long> obtenerIds(Pageable pageable) {
+        return pedidoRepository.findAllIds(pageable);
+    }
+
+    public List<Pedido> obtenerPorIdsConDetalle(List<Long> ids) {
+        return pedidoRepository.findByIdInConDetalle(ids);
     }
 }

@@ -16,11 +16,11 @@ const NotificacionesMozo = () => {
         fetch(`http://localhost:8080/notificaciones/mozo/${idMozo}/estado/${filtro}`)
             .then(res => res.json())
             .then(data => {
-                if (Array.isArray(data)) {
-                    setNotificaciones(data);
+                if (data && Array.isArray(data.content)) {
+                    setNotificaciones(data.content);
                 } else {
                     setNotificaciones([]);
-                    console.warn("La respuesta no es un array:", data);
+                    console.warn("La respuesta no tiene el formato esperado:", data);
                 }
             })
             .catch(err => {

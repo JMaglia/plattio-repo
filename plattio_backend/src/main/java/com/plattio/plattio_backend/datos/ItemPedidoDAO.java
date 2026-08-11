@@ -1,6 +1,8 @@
 package com.plattio.plattio_backend.datos;
 
 import com.plattio.plattio_backend.modelo.ItemPedido;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -35,8 +37,8 @@ public class ItemPedidoDAO {
         return itemPedidoRepository.findByPedidoIdConPlato(pedidoId);
     }
 
-    public List<ItemPedido> obtenerPorEstado(String estado) {
-        return itemPedidoRepository.findByEstadoConPlato(estado);
+    public Page<ItemPedido> obtenerPorEstado(String estado, Pageable pageable) {
+        return itemPedidoRepository.findByEstadoConPlato(estado, pageable);
     }
 
     public List<ItemPedido> obtenerActivos() {

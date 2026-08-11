@@ -6,6 +6,10 @@ import com.plattio.plattio_backend.mapper.SesionMesaMapper;
 import com.plattio.plattio_backend.service.SesionMesaService;
 import com.plattio.plattio_backend.views.SesionMesaView;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,11 +27,9 @@ public class SesionMesaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<SesionMesaView>> obtenerTodasLasSesiones() {
-        List<SesionMesaView> views = sesionMesaService.obtenerTodas().stream()
-                .map(SesionMesaMapper::toView)
-                .toList();
-        return ResponseEntity.ok(views);
+    public ResponseEntity<Page<SesionMesaView>> obtenerTodasLasSesiones(
+            @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        return ResponseEntity.ok(sesionMesaService.obtenerTodasPaginado(pageable).map(SesionMesaMapper::toView));
     }
 
     @GetMapping("/activas")

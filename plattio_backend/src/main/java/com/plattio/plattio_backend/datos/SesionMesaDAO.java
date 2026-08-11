@@ -1,6 +1,8 @@
 package com.plattio.plattio_backend.datos;
 
 import com.plattio.plattio_backend.modelo.SesionMesa;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -27,10 +29,6 @@ public class SesionMesaDAO {
         return sesionMesaRepository.findByIdConMesaYMozoYPedidos(id);
     }
 
-    public List<SesionMesa> obtenerTodas() {
-        return sesionMesaRepository.findAllConMesaYMozoYPedidos();
-    }
-
     public List<SesionMesa> obtenerActivas() {
         return sesionMesaRepository.findByFechaFinIsNullConMesaYMozoYPedidos();
     }
@@ -49,5 +47,13 @@ public class SesionMesaDAO {
 
     public List<SesionMesa> obtenerSesionesFinalizadasPorMesa(Long mesaId) {
         return sesionMesaRepository.findByMesaIdAndFechaFinIsNotNull(mesaId);
+    }
+
+    public Page<Long> obtenerIds(Pageable pageable) {
+        return sesionMesaRepository.findAllIds(pageable);
+    }
+
+    public List<SesionMesa> obtenerPorIdsConMesaYMozoYPedidos(List<Long> ids) {
+        return sesionMesaRepository.findByIdInConMesaYMozoYPedidos(ids);
     }
 }

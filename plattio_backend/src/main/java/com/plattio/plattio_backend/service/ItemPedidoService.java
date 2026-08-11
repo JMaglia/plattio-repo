@@ -8,6 +8,8 @@ import com.plattio.plattio_backend.modelo.Pedido;
 import com.plattio.plattio_backend.modelo.Plato;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -34,8 +36,8 @@ public class ItemPedidoService {
         return itemPedidoDAO.obtenerPorPedido(pedidoId);
     }
 
-    public List<ItemPedido> obtenerPorEstado(String estado) {
-        return itemPedidoDAO.obtenerPorEstado(estado);
+    public Page<ItemPedido> obtenerPorEstado(String estado, Pageable pageable) {
+        return itemPedidoDAO.obtenerPorEstado(estado, pageable);
     }
 
     public List<ItemPedido> obtenerActivos() {

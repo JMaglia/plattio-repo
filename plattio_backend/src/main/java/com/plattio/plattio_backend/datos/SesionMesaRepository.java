@@ -1,6 +1,8 @@
 package com.plattio.plattio_backend.datos;
 
 import com.plattio.plattio_backend.modelo.SesionMesa;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,10 +23,6 @@ public interface SesionMesaRepository extends JpaRepository<SesionMesa, Long> {
     List<SesionMesa> findByMozoIdAndFechaFinIsNull(Long mozoId);
 
     List<SesionMesa> findByMesaIdAndFechaFinIsNotNull(Long mesaId);
-
-    @Query("SELECT DISTINCT s FROM SesionMesa s " +
-           "JOIN FETCH s.mesa LEFT JOIN FETCH s.mozo LEFT JOIN FETCH s.pedidos")
-    List<SesionMesa> findAllConMesaYMozoYPedidos();
 
     @Query("SELECT DISTINCT s FROM SesionMesa s " +
            "JOIN FETCH s.mesa LEFT JOIN FETCH s.mozo LEFT JOIN FETCH s.pedidos " +
@@ -50,4 +48,12 @@ public interface SesionMesaRepository extends JpaRepository<SesionMesa, Long> {
            "JOIN FETCH s.mesa LEFT JOIN FETCH s.mozo LEFT JOIN FETCH s.pedidos " +
            "WHERE s.mozo.id = :mozoId AND s.fechaFin IS NULL")
     List<SesionMesa> findByMozoIdAndFechaFinIsNullConMesaYMozoYPedidos(@Param("mozoId") Long mozoId);
+
+    @Query(value = "SELECT s.id FROM SesionMesa s", countQuery = "SELECT count(s) FROM SesionMesa s")
+    Page<Long> findAllIds(Pageable pageable);
+
+    @Query("SELECT DISTINCT s FROM SesionMesa s " +
+           "JOIN FETCH s.mesa LEFT JOIN FETCH s.mozo LEFT JOIN FETCH s.pedidos " +
+           "WHERE s.id IN :ids")
+    List<SesionMesa> findByIdInConMesaYMozoYPedidos(@Param("ids") List<Long> ids);
 }

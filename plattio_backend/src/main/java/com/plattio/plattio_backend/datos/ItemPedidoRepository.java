@@ -1,6 +1,8 @@
 package com.plattio.plattio_backend.datos;
 
 import com.plattio.plattio_backend.modelo.ItemPedido;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,8 +24,9 @@ public interface ItemPedidoRepository extends JpaRepository<ItemPedido, Long> {
     @Query("SELECT i FROM ItemPedido i JOIN FETCH i.plato WHERE i.pedido.id = :pedidoId")
     List<ItemPedido> findByPedidoIdConPlato(@Param("pedidoId") Long pedidoId);
 
-    @Query("SELECT i FROM ItemPedido i JOIN FETCH i.plato WHERE i.estado = :estado")
-    List<ItemPedido> findByEstadoConPlato(@Param("estado") String estado);
+    @Query(value = "SELECT i FROM ItemPedido i JOIN FETCH i.plato WHERE i.estado = :estado",
+           countQuery = "SELECT count(i) FROM ItemPedido i WHERE i.estado = :estado")
+    Page<ItemPedido> findByEstadoConPlato(@Param("estado") String estado, Pageable pageable);
 
     @Query("SELECT i FROM ItemPedido i JOIN FETCH i.plato WHERE i.fechaFin IS NULL")
     List<ItemPedido> findByFechaFinIsNullConPlato();

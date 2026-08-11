@@ -8,12 +8,17 @@ import com.plattio.plattio_backend.modelo.Pedido;
 import com.plattio.plattio_backend.modelo.SesionMesa;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class PedidoService {
@@ -30,8 +35,17 @@ public class PedidoService {
         this.notificacionService = notificacionService;
     }
 
-    public List<Pedido> obtenerTodos() {
-        return pedidoDAO.obtenerTodos();
+    @Transactional(readOnly = true)
+    public Page<Pedido> obtenerTodosPaginado(Pageable pageable) {
+        Page<Long> idsPage = pedidoDAO.obtenerIds(pageable);
+        if (idsPage.isEmpty()) {
+            return Page.empty(pageable);
+        }
+        List<Long> ids = idsPage.getContent();
+        Map<Long, Pedido> pedidosPorId = pedidoDAO.obtenerPorIdsConDetalle(ids).stream()
+                .collect(Collectors.toMap(Pedido::getId, p -> p));
+        List<Pedido> pedidosOrdenados = ids.stream().map(pedidosPorId::get).toList();
+        return new PageImpl<>(pedidosOrdenados, pageable, idsPage.getTotalElements());
     }
 
     public Pedido obtenerPorId(Long id) {

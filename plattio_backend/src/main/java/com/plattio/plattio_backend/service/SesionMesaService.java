@@ -14,11 +14,16 @@ import com.plattio.plattio_backend.modelo.Mesa;
 import com.plattio.plattio_backend.modelo.SesionMesa;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class SesionMesaService {
@@ -38,10 +43,17 @@ public class SesionMesaService {
     }
 
     @Transactional(readOnly = true)
-    public List<SesionMesa> obtenerTodas() {
-        List<SesionMesa> sesiones = sesionMesaDAO.obtenerTodas();
-        hidratarItemsDePedidos(sesiones);
-        return sesiones;
+    public Page<SesionMesa> obtenerTodasPaginado(Pageable pageable) {
+        Page<Long> idsPage = sesionMesaDAO.obtenerIds(pageable);
+        if (idsPage.isEmpty()) {
+            return Page.empty(pageable);
+        }
+        List<Long> ids = idsPage.getContent();
+        Map<Long, SesionMesa> sesionesPorId = sesionMesaDAO.obtenerPorIdsConMesaYMozoYPedidos(ids).stream()
+                .collect(Collectors.toMap(SesionMesa::getId, s -> s));
+        List<SesionMesa> sesionesOrdenadas = ids.stream().map(sesionesPorId::get).toList();
+        hidratarItemsDePedidos(sesionesOrdenadas);
+        return new PageImpl<>(sesionesOrdenadas, pageable, idsPage.getTotalElements());
     }
 
     @Transactional(readOnly = true)

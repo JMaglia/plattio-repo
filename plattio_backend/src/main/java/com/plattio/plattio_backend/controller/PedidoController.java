@@ -6,6 +6,10 @@ import com.plattio.plattio_backend.mapper.PedidoMapper;
 import com.plattio.plattio_backend.service.PedidoService;
 import com.plattio.plattio_backend.views.PedidoView;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,11 +28,9 @@ public class PedidoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PedidoView>> obtenerTodosLosPedidos() {
-        List<PedidoView> views = pedidoService.obtenerTodos().stream()
-                .map(PedidoMapper::toView)
-                .toList();
-        return ResponseEntity.ok(views);
+    public ResponseEntity<Page<PedidoView>> obtenerTodosLosPedidos(
+            @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        return ResponseEntity.ok(pedidoService.obtenerTodosPaginado(pageable).map(PedidoMapper::toView));
     }
 
     @GetMapping("/{id}")

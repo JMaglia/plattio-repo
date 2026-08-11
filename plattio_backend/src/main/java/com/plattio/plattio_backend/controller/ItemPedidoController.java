@@ -5,6 +5,9 @@ import com.plattio.plattio_backend.mapper.ItemPedidoMapper;
 import com.plattio.plattio_backend.service.ItemPedidoService;
 import com.plattio.plattio_backend.views.ItemPedidoView;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,11 +34,9 @@ public class ItemPedidoController {
     }
 
     @GetMapping("/estado/{estado}")
-    public ResponseEntity<List<ItemPedidoView>> obtenerItemsPorEstado(@PathVariable String estado) {
-        List<ItemPedidoView> views = itemPedidoService.obtenerPorEstado(estado).stream()
-                .map(ItemPedidoMapper::toView)
-                .toList();
-        return ResponseEntity.ok(views);
+    public ResponseEntity<Page<ItemPedidoView>> obtenerItemsPorEstado(
+            @PathVariable String estado, @PageableDefault(size = 20) Pageable pageable) {
+        return ResponseEntity.ok(itemPedidoService.obtenerPorEstado(estado, pageable).map(ItemPedidoMapper::toView));
     }
 
     @GetMapping("/activos")

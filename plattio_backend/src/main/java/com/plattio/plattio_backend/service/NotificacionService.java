@@ -13,10 +13,10 @@ import com.plattio.plattio_backend.modelo.Pedido;
 import com.plattio.plattio_backend.modelo.SesionMesa;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class NotificacionService {
@@ -41,15 +41,15 @@ public class NotificacionService {
                 .orElseThrow(() -> new NotificacionException("Notificación no encontrada con ID: " + id, HttpStatus.NOT_FOUND));
     }
 
-    public List<Notificacion> obtenerTodas() {
-        return notificacionDAO.obtenerTodas();
+    public Page<Notificacion> obtenerTodas(Pageable pageable) {
+        return notificacionDAO.obtenerTodas(pageable);
     }
 
-    public List<Notificacion> obtenerPorMozoYEstado(Long mozoId, String estado) {
+    public Page<Notificacion> obtenerPorMozoYEstado(Long mozoId, String estado, Pageable pageable) {
         if ("completada".equalsIgnoreCase(estado)) {
-            return notificacionDAO.buscarPorMozoCompletadas(mozoId, estado);
+            return notificacionDAO.buscarPorMozoCompletadas(mozoId, estado, pageable);
         }
-        return notificacionDAO.buscarPorMozoYEstado(mozoId, estado);
+        return notificacionDAO.buscarPorMozoYEstado(mozoId, estado, pageable);
     }
 
     public void crearNotificacion(CrearNotificacionRequest request) {
